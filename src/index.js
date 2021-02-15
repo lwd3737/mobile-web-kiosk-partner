@@ -1,12 +1,31 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import { createStore, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
+import ReduxThunk from 'redux-thunk';
+import { composeWithDevTools } from 'redux-devtools-extension';
+import logger from 'redux-logger';
+import { ThemeProvider } from 'styled-components';
+
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import rootReducer from 'modules';
+import theme from 'common/theme';
+import GlobalStyle from 'common/style/global';
+
+const store = createStore(
+  rootReducer,
+  composeWithDevTools(applyMiddleware(applyMiddleware(ReduxThunk, logger)))
+);
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <ThemeProvider theme={theme}>
+        <App />
+      </ThemeProvider>
+      <GlobalStyle />
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );
