@@ -15,7 +15,7 @@ import GlobalStyle from 'common/style/global';
 
 const store = createStore(
   rootReducer,
-  composeWithDevTools(applyMiddleware(applyMiddleware(ReduxThunk, logger)))
+  composeWithDevTools(applyMiddleware(ReduxThunk, logger))
 );
 
 ReactDOM.render(
