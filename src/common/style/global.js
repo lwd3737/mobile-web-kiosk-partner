@@ -51,6 +51,15 @@ const GlobalStyle = createGlobalStyle`
     a{
         text-decoration: none;
     }
+    button{
+        border: none;
+        background: none;
+    }
+    input{
+        border: 1px solid rgba(0,0,0,0.1);
+        border-radius: 8px;
+        padding: 10px 15px;
+    }
 `
 
 export default GlobalStyle

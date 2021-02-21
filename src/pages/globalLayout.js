@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom';
 import { useSelector } from 'react-redux';
   
-import SpaceAndSeatManagement from './spaceAndSeatManagement';
+import RoomAndSeatManagement from './RoomAndSeatManagement';
 
 export default function GlobalLayout(){
     const { serviceName } = useSelector(state => state.auth.partner);
@@ -25,7 +25,7 @@ export default function GlobalLayout(){
                 <NavLink className="nav-item" to={`${basePath}/users`}>
                     회원 관리
                 </NavLink>
-                <NavLink className="nav-item" to={`${basePath}/spaces`}>
+                <NavLink className="nav-item" to={`${basePath}/rooms`}>
                     공간/좌석 관리
                 </NavLink>
             </header>
@@ -35,12 +35,12 @@ export default function GlobalLayout(){
                     <Route exact path={basePath}>
                         home
                     </Route>
-                    <Route exact path={`${basePath}/users`}>
+                    <Route path={`${basePath}/users`}>
                         users management
                     </Route>
-                    <Route exact path={`${basePath}/spaces`}>
-                        <SpaceAndSeatManagement 
-                            basePath={`${basePath}/spaces`}
+                    <Route path={`${basePath}/rooms`}>
+                        <RoomAndSeatManagement 
+                            basePath={`${basePath}/rooms`}
                         />
                     </Route>
                 </main>
@@ -74,6 +74,8 @@ const S = {
         }
 
         .contents{
+            width: 100%;
+            height: 100%;
             padding: 3% 6%;
         }
     `
