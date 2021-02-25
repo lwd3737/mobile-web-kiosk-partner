@@ -3,23 +3,20 @@ import styled from 'styled-components';
 
 import { SimpleButton } from 'common/components'
 
-export default function RoomCreationForm({ 
+export default function RoomForm({ 
     number,
     name,
     colSeatCount,
     rowSeatCount,
+    rightBtnText,
     onInputsChange,
-    onNextBtnClick
+    onPrevBtnClick,
+    onRightBtnClick,
 }){
-    const onSubmit = (e) => {
-        e.preventDefault();
-
-        onNextBtnClick();
-    };
 
     return (
-        <S.RoomCreationForm
-            onSubmit={onSubmit}
+        <S.RoomForm
+            onSubmit={(e) => e.preventDefault()}
         >
             <div className="field">
                 <label htmlFor="room-number">
@@ -68,6 +65,7 @@ export default function RoomCreationForm({
             <div className="btn-wrapper">
                 <SimpleButton className="prev-btn"
                     backgroundColor={'gray1'}
+                    onClick={onPrevBtnClick}
                 >
                     이전
                 </SimpleButton>
@@ -75,16 +73,17 @@ export default function RoomCreationForm({
                     extraStyle={{
                         marginLeft: '20px'
                     }}
+                    onClick={onRightBtnClick}
                 >
-                    다음
+                    {rightBtnText}
                 </SimpleButton>
             </div>
-        </S.RoomCreationForm>
+        </S.RoomForm>
     )
 }
 
 const S = {
-    RoomCreationForm: styled.form`
+    RoomForm: styled.form`
         .field{
             margin-bottom: 5vh;
             font-size: 1.2rem;

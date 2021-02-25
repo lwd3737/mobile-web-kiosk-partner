@@ -17,7 +17,6 @@ export const SimpleButton = ({ children, backgroundColor, extraStyle, onClick })
 const S = {
     SimpleButton: styled.button`
         ${({ theme, backgroundColor }) => {
-            console.log('bg color: ', backgroundColor, theme);
             return css`
                 display: inline-block;
                 background-color: ${backgroundColor 

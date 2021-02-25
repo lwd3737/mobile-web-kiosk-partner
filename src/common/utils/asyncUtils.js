@@ -4,12 +4,12 @@ export const createAsyncThunk = (type, asyncApi) => {
         dispatch({type, param});
 
         const { successCb, failedCb } = options || {};
-        console.log('type: ', type);
+
         try{
             const payload = await asyncApi(param);
             dispatch({ type: SUCCESS, payload});
 
-            (successCb && successCb(getState)); 
+            (successCb && successCb(getState, payload)); 
         } catch(e){
             dispatch({ type: FAILED, error: e});
 

@@ -2,23 +2,23 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 
 import { Head } from 'common/components';
-import { RoomCreationFormContainer } from './containers';
+import { RoomModifyContainer } from './containers';
 
-export default function RoomCreationPage(){
+export default function RoomModifyPage(){
     return (
-        <S.RoomCreationPage>
+        <S.RoomModifyPage>
             <Head
-                title="공간 생성"
+                title="공간 수정"
             >
             </Head>
 
-            <RoomCreationFormContainer />
-        </S.RoomCreationPage>
+            <RoomModifyContainer />
+        </S.RoomModifyPage>
     )
 }
 
 const S = {
-    RoomCreationPage: styled.div`
+    RoomModifyPage: styled.div`
         ${({ theme }) => {
             const { font } = theme;
 

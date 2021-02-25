@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { RoomCreationForm } from '../components';
+import { RoomForm } from '../../components';
 import { CREATE_ROOM_FAILED, createRoomThunk } from 'modules/rooms';
 
 export default function RoomCreationFormContainer(){
@@ -16,7 +16,7 @@ export default function RoomCreationFormContainer(){
     });
     const partner = useSelector(state => state.auth.partner);
 
-    const handleInputChange = (e) => {
+    const handleInputsChange = (e) => {
         const { name, value } = e.target;
 
         setInputs({
@@ -25,12 +25,16 @@ export default function RoomCreationFormContainer(){
         });
     };
 
+    const handlePrevBtnClick = () => {
+        history.replace('/partner/rooms');
+    }
+
     const handleNextBtnClick = () => {
-        const successCb = (getState) => {
-            const { rooms } = getState();
+        const successCb = (getState, payload) => {
+            const { id, name } = payload;
             
-            window.alert(`공간(${inputs.name})이 생성되었습니다.`);
-            history.push()  
+            window.alert(`공간(${name})이 생성되었습니다.`);
+            history.push(`/partner/rooms/${id}/seats/creation`);  
         };
         
         const failedCb = (getState) => {
@@ -52,11 +56,13 @@ export default function RoomCreationFormContainer(){
     };
 
     return (
-        <RoomCreationForm 
+        <RoomForm
             {...inputs}
-            onInputsChange={handleInputChange}
-            onNextBtnClick={handleNextBtnClick}
-        />
+            rightBtnText="다음"
+            onInputsChange={handleInputsChange}
+            onPrevBtnClick={handlePrevBtnClick}
+            onRightBtnClick={handleNextBtnClick}
+       />
     );
 }
 
