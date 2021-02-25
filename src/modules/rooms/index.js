@@ -19,6 +19,10 @@ export const MODIFY_ROOM = 'rooms/MODIFY_ROOM';
 export const MODIFY_ROOM_SUCCESS = 'rooms/MODIFY_ROOM_SUCCESS';
 export const MODIFY_ROOM_FAILED = 'rooms/MODIFY_ROOM_FAILED';
 
+export const DELETE_ROOM = 'rooms/DELETE_ROOM';
+export const DELETE_ROOM_SUCCESS = 'rooms/DELETE_ROOM_SUCCESS';
+export const DELETE_ROOM_FAILED = 'rooms/DELETE_ROOM_FAILED';
+
 //redux thunk
 export const getRoomListThunk = createAsyncThunk(GET_ROOM_LIST, roomApi.getRoomList);
 
@@ -27,6 +31,8 @@ export const createRoomThunk = createAsyncThunk(CREATE_ROOM, roomApi.createRoom)
 export const getRoomFormThunk = createAsyncThunk(GET_ROOM_FORM, roomApi.getRoomForm);
 
 export const modifyRoomThunk = createAsyncThunk(MODIFY_ROOM, roomApi.modifyRoom);
+
+export const deleteRoomThunk = createAsyncThunk(DELETE_ROOM, roomApi.deleteRoom);
 
 const initialState = {
     byId: {},
@@ -71,7 +77,7 @@ function handleRoomList(state, action){
     }
 }
 
-function handleRoom(state, action){
+function handleRoomActionsSuccess(state, action){
     switch(action.type){
         case GET_ROOM_FORM_SUCCESS:
             //payload: { id, name, number, colSeatCount, rowSeatCount, seatCount }
@@ -102,19 +108,30 @@ function handleRoom(state, action){
         case MODIFY_ROOM_SUCCESS:
             return {
                 ...state,
+                byId: {
+                    ...state.byId,
+                    [action.payload.id]: {
+                        ...action.payload
+                    }
+                }
             }
-        case CREATE_ROOM_FAILED:
+        case DELETE_ROOM_SUCCESS:
+            delete state.byId[action.payload.id];
+
             return {
-                ...state
-            };
-        case GET_ROOM_FORM_FAILED:
-            return {
-                ...state
+                ...state,
+                byId: {
+                    ...state.byId,
+                },
+                allIds: state.allIds.filter(id => id != action.payload.id)
             }
-        case MODIFY_ROOM_FAILED:
-            return {
-                ...state
-            }
+    }
+    
+}
+
+function handleRoomActionsFailed(state, action){
+    return {
+        ...state
     }
 }
 
@@ -123,14 +140,17 @@ export default function roomReducer(state = initialState, action){
     switch(action.type){
         case GET_ROOM_LIST_SUCCESS:
         case GET_ROOM_LIST_FAILED:
-            return handleRoomList(state, action);
+                return handleRoomList(state, action);
         case GET_ROOM_FORM_SUCCESS:
         case CREATE_ROOM_SUCCESS:
         case MODIFY_ROOM_SUCCESS:
+        case DELETE_ROOM_SUCCESS:
+            return handleRoomActionsSuccess(state, action);
         case GET_ROOM_FORM_FAILED:
         case CREATE_ROOM_FAILED:
         case MODIFY_ROOM_FAILED:
-            return handleRoom(state, action);
+        case DELETE_ROOM_FAILED:
+            return handleRoomActionsFailed(state, action);
         default:
             return state
     }

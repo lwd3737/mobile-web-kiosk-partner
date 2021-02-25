@@ -3,13 +3,18 @@ import styled, { css } from 'styled-components';
 
 import { Card } from 'common/components';
 
-export default function RoomList({ rooms, onRoomModifyBtnClick }){
+export default function RoomList({ 
+    rooms,
+    onRoomModifyBtnClick,
+    onRoomDeleteBtnClick
+}){
     const renderRooms = (rooms) => {
         return rooms.map(room => {
             return <RoomItem 
-                key={room.number}
+                key={room.id}
                 {...room}
                 onRoomModifyBtnClick={onRoomModifyBtnClick}
+                onRoomDeleteBtnClick={onRoomDeleteBtnClick}
             />
         })
     }
@@ -21,7 +26,14 @@ export default function RoomList({ rooms, onRoomModifyBtnClick }){
     )
 }
 
-function RoomItem({ id, number, name ,seatCount, onRoomModifyBtnClick }){
+function RoomItem({ 
+    id, 
+    number, 
+    name,
+    seatCount, 
+    onRoomModifyBtnClick,
+    onRoomDeleteBtnClick 
+}){
     return (
         <Card
             style={{
@@ -42,7 +54,11 @@ function RoomItem({ id, number, name ,seatCount, onRoomModifyBtnClick }){
                     >
                          수정
                     </button>
-                    <button className="delete">삭제</button>
+                    <button className="delete"
+                        onClick={() => onRoomDeleteBtnClick(id)}
+                    >
+                        삭제
+                    </button>
                 </div>
             </S.RoomItem>
         </Card>
