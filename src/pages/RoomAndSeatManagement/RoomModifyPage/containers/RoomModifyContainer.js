@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams, useRouteMatch } from 'react-router-dom';
 
 import { RoomForm } from '../../components';
 import { 
     MODIFY_ROOM_FAILED,
-    getRoomFormThunk, 
+    getRoomThunk, 
     modifyRoomThunk,
 } from 'modules/rooms';
 
 export default function RoomModifyFormContainer(){
     const history = useHistory();
     const dispatch = useDispatch();
+    const { url } = useRouteMatch();
 
     const [inputs, setInputs] = useState({
         number: null,
@@ -26,7 +27,7 @@ export default function RoomModifyFormContainer(){
     const { roomId } = useParams();
     const room = useSelector(state => state.rooms.byId[roomId]);
     useEffect(() => {
-        dispatch(getRoomFormThunk({ partnerId: partner.id, roomId }));
+        dispatch(getRoomThunk({ partnerId: partner.id, roomId }));
 
         setInputs({
             ...room
@@ -50,8 +51,10 @@ export default function RoomModifyFormContainer(){
     const handleModifyBtnClick = () => {
         const successCb = (getState, payload) => {
             const { name } = payload;
+            const _url = url.split('modify')[0] + 'seats/modify';
  
             window.alert(`공간(${name})이 수정되었습니다.`);
+            history.push(_url);
         };
 
         const failedCb = (getState) => {

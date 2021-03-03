@@ -1,9 +1,9 @@
 import client from '../client';
 import clietn from '../client';
 
-export const login = async (username) => {
+export const login = async (ownerId) => {
     const res = await client.post('login', {
-        username
+        ownerId
     });
 
     return res.data;

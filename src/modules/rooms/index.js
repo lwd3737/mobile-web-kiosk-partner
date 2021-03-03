@@ -11,9 +11,9 @@ export const CREATE_ROOM = 'rooms/CREATE_ROOM';
 export const CREATE_ROOM_SUCCESS = 'rooms/CREATE_ROOM_SUCCESS';
 export const CREATE_ROOM_FAILED = 'rooms/CREATE_ROOM_FAILED';
 
-export const GET_ROOM_FORM = 'rooms/GET_ROOM_FORM';
-export const GET_ROOM_FORM_SUCCESS = 'rooms/GET_ROOM_FORM_SUCCESS';
-export const GET_ROOM_FORM_FAILED = 'rooms/GET_ROOM_FORM_FAILED';
+export const GET_ROOM = 'rooms/GET_ROOM';
+export const GET_ROOM_SUCCESS = 'rooms/GET_ROOM_SUCCESS';
+export const GET_ROOM_FAILED = 'rooms/GET_ROOM_FAILED';
 
 export const MODIFY_ROOM = 'rooms/MODIFY_ROOM';
 export const MODIFY_ROOM_SUCCESS = 'rooms/MODIFY_ROOM_SUCCESS';
@@ -28,7 +28,7 @@ export const getRoomListThunk = createAsyncThunk(GET_ROOM_LIST, roomApi.getRoomL
 
 export const createRoomThunk = createAsyncThunk(CREATE_ROOM, roomApi.createRoom);
 
-export const getRoomFormThunk = createAsyncThunk(GET_ROOM_FORM, roomApi.getRoomForm);
+export const getRoomThunk = createAsyncThunk(GET_ROOM, roomApi.getRoom);
 
 export const modifyRoomThunk = createAsyncThunk(MODIFY_ROOM, roomApi.modifyRoom);
 
@@ -40,29 +40,18 @@ const initialState = {
 }
 
 //case reducer
-function handleRoomList(state, action){
+function handleRoomListActions(state, action){
     switch(action.type){
         case GET_ROOM_LIST_SUCCESS:
             const rooms = action.payload;
+            //room: {id, number, name, colSeatCount, rowSeatCount, seatCount,
+            //  hasSeats, seatCountInUse}
 
             return {
                 ...state,
                byId: rooms.reduce((obj, room) => {
-                   const { 
-                       id,
-                       number,
-                       name,
-                       colSeatCount,
-                       rowSeatCount,
-                       seatCount
-                    } = room;
-                   obj[id] = {
-                       id,
-                       number,
-                       name,
-                       colSeatCount,
-                       rowSeatCount,
-                       seatCount
+                   obj[room.id] = {
+                      ...room
                    };
 
                    return obj;
@@ -79,7 +68,7 @@ function handleRoomList(state, action){
 
 function handleRoomActionsSuccess(state, action){
     switch(action.type){
-        case GET_ROOM_FORM_SUCCESS:
+        case GET_ROOM_SUCCESS:
             //payload: { id, name, number, colSeatCount, rowSeatCount, seatCount }
 
             return {
@@ -140,13 +129,13 @@ export default function roomReducer(state = initialState, action){
     switch(action.type){
         case GET_ROOM_LIST_SUCCESS:
         case GET_ROOM_LIST_FAILED:
-                return handleRoomList(state, action);
-        case GET_ROOM_FORM_SUCCESS:
+                return handleRoomListActions(state, action);
+        case GET_ROOM_SUCCESS:
         case CREATE_ROOM_SUCCESS:
         case MODIFY_ROOM_SUCCESS:
         case DELETE_ROOM_SUCCESS:
             return handleRoomActionsSuccess(state, action);
-        case GET_ROOM_FORM_FAILED:
+        case GET_ROOM_FAILED:
         case CREATE_ROOM_FAILED:
         case MODIFY_ROOM_FAILED:
         case DELETE_ROOM_FAILED:

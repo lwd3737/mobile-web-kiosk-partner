@@ -23,7 +23,7 @@ const S = {
 
                 .title{
                     font-size: ${font.size.contentsTitle};
-                    margin-bottom: 10vh;
+                    margin-bottom: 7vh;
                 }
             `
         }}

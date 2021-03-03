@@ -34,7 +34,7 @@ export default function RoomListPage(){
 const S = {
     RoomListPage: styled.div`
         .room-creation{
-            background: #0000ff9e;
+            background: ${({ theme }) => theme.colors.green1};
             height: fit-content;
             padding: 5px 15px 5px 5px;
             border-radius: 20px;

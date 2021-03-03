@@ -5,6 +5,7 @@ import { Switch, Route, useRouteMatch  } from 'react-router-dom';
 import RoomListPage from './RoomListPage';
 import RoomCreationPage from './RoomCreationPage';
 import RoomModifyPage from './RoomModifyPage';
+import SeatsCreationPage from './SeatsCreationPage';
 
 export default function RoomAndSeatManagement(){
     const { path } = useRouteMatch();
@@ -23,11 +24,12 @@ export default function RoomAndSeatManagement(){
                 <RoomModifyPage 
                 />
             </Route>
-            <Route exact path={`${path}/:roomId/seats/creation`}>
-
-            </Route>
             <Route exact path={`${path}/:roomId/seats`}>
                 seats
+            </Route>
+            <Route exact path={`${path}/:roomId/seats/creation`}>
+                <SeatsCreationPage
+                />
             </Route>
         </Switch>
     )

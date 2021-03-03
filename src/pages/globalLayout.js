@@ -3,35 +3,49 @@ import styled, { css } from 'styled-components';
 import {
     Switch,
     Route,
-    NavLink 
+    NavLink,
+    useHistory 
 } from 'react-router-dom';
 import { useSelector } from 'react-redux';
   
 import RoomAndSeatManagement from './RoomAndSeatManagement';
+import LoginPage from 'pages/Auth/LoginPage';
 
 export default function GlobalLayout(){
+    const history = useHistory();
     const { serviceName } = useSelector(state => state.auth.partner);
     const basePath = `/partner`;
 
+    const isLogin = useSelector(state => state.auth.isLogin);
+
+    if(!isLogin){
+        history.replace(`${basePath}/auth/login`);
+    }
+
     return (
         <S.GlobalLayout>
-            <header className="global-header">
-                <div className="partner-logo">
-                    {serviceName}
-                </div>
-                <NavLink className="nav-item" to={basePath}>
-                    홈
-                </NavLink>
-                <NavLink className="nav-item" to={`${basePath}/users`}>
-                    회원 관리
-                </NavLink>
-                <NavLink className="nav-item" to={`${basePath}/rooms`}>
-                    공간/좌석 관리
-                </NavLink>
-            </header>
+            {isLogin && (
+                <header className="global-header">
+                    <div className="partner-logo">
+                        {serviceName}
+                    </div>
+                    <NavLink className="nav-item" to={basePath}>
+                        홈
+                    </NavLink>
+                    <NavLink className="nav-item" to={`${basePath}/users`}>
+                        회원 관리
+                    </NavLink>
+                    <NavLink className="nav-item" to={`${basePath}/rooms`}>
+                        공간/좌석 관리
+                    </NavLink>
+                </header>
+            )}
             
             <Switch>
                 <main className="contents">
+                    <Route exact path={`${basePath}/auth/login`}>
+                        <LoginPage />
+                    </Route>
                     <Route exact path={basePath}>
                         home
                     </Route>

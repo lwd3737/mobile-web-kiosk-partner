@@ -18,6 +18,14 @@ export default function RoomListContainer(){
         dispatch(getRoomListThunk(partner.id));
     }, [partner]);
     
+    const handleRoomMoveClick = (roomId) => {
+        if(roomsSlice.byId[roomId].hasSeats){
+            history.push(`${url}/${roomId}/seats`);
+        } else {
+            history.push(`${url}/${roomId}/seats/creation`);
+        }
+    }
+
     const handleRoomModifyBtnClick = (roomId) => {
         history.push(`${url}/${roomId}/modify`);
     }
@@ -53,6 +61,7 @@ export default function RoomListContainer(){
 
     return <RoomList 
         rooms={rooms}
+        onRoomMoveClick={handleRoomMoveClick}
         onRoomModifyBtnClick={handleRoomModifyBtnClick}
         onRoomDeleteBtnClick={handleRoomDeleteBtnClick}
     />

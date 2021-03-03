@@ -1,12 +1,25 @@
 import {
     GET_ROOM_LIST,
-    CREATE_ROOM
+    CREATE_ROOM,
+    GET_ROOM,
+    MODIFY_ROOM,
+    DELETE_ROOM
 } from '../rooms';
+
+import {
+    REQUEST_LOGIN,
+    // REQUEST_AUTO_LOGIN
+} from '../auth';
 
 //reducer utils
 const LOADING_TYPES = [
     GET_ROOM_LIST,
-    CREATE_ROOM
+    CREATE_ROOM,
+    GET_ROOM,
+    MODIFY_ROOM,
+    DELETE_ROOM,
+    REQUEST_LOGIN,
+    // REQUEST_AUTO_LOGIN
 ];
 
 const isLoadingType = (type) => {

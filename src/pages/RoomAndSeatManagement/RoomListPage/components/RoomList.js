@@ -5,14 +5,16 @@ import { Card } from 'common/components';
 
 export default function RoomList({ 
     rooms,
+    onRoomMoveClick,
     onRoomModifyBtnClick,
     onRoomDeleteBtnClick
 }){
     const renderRooms = (rooms) => {
         return rooms.map(room => {
             return <RoomItem 
-                key={room.id}
+                key={room.number}
                 {...room}
+                onRoomMoveClick={onRoomMoveClick}
                 onRoomModifyBtnClick={onRoomModifyBtnClick}
                 onRoomDeleteBtnClick={onRoomDeleteBtnClick}
             />
@@ -30,32 +32,59 @@ function RoomItem({
     id, 
     number, 
     name,
-    seatCount, 
+    seatCount,
+    hasSeats,
+    seatCountInUse, 
+    onRoomMoveClick,
     onRoomModifyBtnClick,
     onRoomDeleteBtnClick 
 }){
+    const renderSeatStatus = () => {
+        if(hasSeats){
+            return (
+                <span className="seat-count-in-use">
+                    {seatCountInUse}
+                </span> /  
+                <span className="total-seat-count">
+                    {seatCount}
+                </span>
+            )
+        } else {
+            return (
+                <span className="has-not-seats">
+                    좌석을 생성해주세요.
+                </span>
+            )
+        }
+    }
+
     return (
         <Card
             style={{
                 marginBottom: '7vw'
             }}
         >
-            <S.RoomItem>
+            <S.RoomItem
+                onClick={() => onRoomMoveClick(id)}
+            >
                 <div className="room-name">{name}</div>
                 <div className="seat-status">
-                    <span></span> /  
-                    <span className="total-seat-count">
-                        {seatCount}
-                    </span>
+                    {renderSeatStatus()}
                 </div>
                 <div className="buttons">
                     <button className="edit"
-                        onClick={() => onRoomModifyBtnClick(id)}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onRoomModifyBtnClick(id)
+                        }}
                     >
                          수정
                     </button>
                     <button className="delete"
-                        onClick={() => onRoomDeleteBtnClick(id)}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onRoomDeleteBtnClick(id)
+                        }}
                     >
                         삭제
                     </button>
@@ -74,12 +103,17 @@ const S = {
     RoomItem: styled.div`
         width: 15vw;    
 
+        &:hover{
+            cursor: pointer;
+        }
+
         .room-name{
             margin-bottom: 15%;
         }
 
         .seat-status{
             margin-bottom: 15%;
+            font-size: 0.7rem;
 
             .total-seat-count{
                 font-weight: bold;

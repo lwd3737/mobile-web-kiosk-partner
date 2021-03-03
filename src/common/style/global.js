@@ -3,6 +3,7 @@ import { createGlobalStyle } from 'styled-components'
 const GlobalStyle = createGlobalStyle`
     *{
         color: rgb(0 0 0 / 65%);
+        box-sizing: border-box;
     }
 
     html, body, div, span, applet, object, iframe,
@@ -54,6 +55,9 @@ const GlobalStyle = createGlobalStyle`
     button{
         border: none;
         background: none;
+    }
+    button:hover{
+        cursor: pointer;
     }
     input{
         border: 1px solid rgba(0,0,0,0.1);

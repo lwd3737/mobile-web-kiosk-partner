@@ -30,7 +30,7 @@ export const createRoom = async ({
     return res.data;
 }
 
-export const getRoomForm = async ({ partnerId, roomId }) => {
+export const getRoom = async ({ partnerId, roomId }) => {
     const res = await client.get(`/rooms/${roomId}`, {
         params: {
             partnerId,
