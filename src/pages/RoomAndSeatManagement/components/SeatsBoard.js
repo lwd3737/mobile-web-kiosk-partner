@@ -1,60 +1,64 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import Seat from './Seat';
 
-export default function SeatsBoard({ room, seats = {}}){
-    const { 
-        colSeatCount, 
-        rowSeatCount, 
-    } = room;
-
+export default function SeatsBoard({ seats, data = {}, handlers }){
+    const { startNumber } = data;
+    
     const renderSeats = () => {
-        const renderRows = (rowCount) => {
-            const rows = [];
+        return (
+            <div className="handlers-area"
+                {...handlers.board}
+            >
+                {seats.map((row, y) => {
+                    const cols = row.map((seat, x) => <Seat 
+                        key={`${x},${y}`}
+                        x={x}
+                        y={y}
+                        {...seat}
+                        handlers={handlers.seat}
+                    />)
 
-            for(let i = 0; i < rowCount; i++){
-                rows.push(
-                    <S.Row key={i}>
-                        {renderCols(colSeatCount)}
-                    </S.Row>
-                );
-            }
+                    return (
+                        <div className="row">
+                            {cols}
+                        </div>
+                    )
+                })}
+            </div>
+        ) 
+    };
 
-            return rows;
-        };
-
-        const renderCols = (colCount) => {
-            const cols = [];
-
-            for(let i = 0; i < colCount; i++){
-                cols.push(
-                    <Seat 
-                        key={i}
-                        {...seats}
-                    />
-                )
-            }
-
-            return cols;
-        };
-
-        return renderRows(rowSeatCount);
-    }
-
+    
     return (
         <S.SeatsBoard>
-            {renderSeats()}
+            {startNumber && (
+                <div className="number-display">
+                    {startNumber} 번 부터 시작
+                </div>
+            )}
+            <div className="seats">
+                {renderSeats()}
+            </div>
         </S.SeatsBoard>
     )
 }
 
 const S = {
     SeatsBoard: styled.div`
-        
+        width: 70vw;
+        max-height: 70vh;
+        overflow: scroll;
+
+        .number-display{
+            padding: 10px;
+            margin-bottom: 3vh;
+        }
+
+        .row{
+            display: flex;
+        }
     `,
-    Row: styled.div`
-        display: flex;
-    `
 }
 

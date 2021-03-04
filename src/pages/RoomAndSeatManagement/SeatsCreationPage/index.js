@@ -22,7 +22,7 @@ export default function SeatsCreationPage(){
         }));
     }, []);
 
-    const useSeats = useState({});
+    const useSeats = useState([]);
 
     const renderContents = (room) => {
         if(!room) return null;
