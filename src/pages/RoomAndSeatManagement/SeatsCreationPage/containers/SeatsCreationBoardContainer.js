@@ -37,30 +37,6 @@ export default function SeatsCreationBoardContainer({ room, useSeats }){
         setSeats(seats);
     }, []);
 
-    const [createdNumbers, setCreatedNumbers] = useState({});
-    const getValidatedStartNumber = (startNumber) => {
-        let _startNumber = startNumber;
-        while(createdNumbers[_startNumber]){
-            _startNumber++;
-        }
-
-        return ++_startNumber;
-    };
-
-    
-    const getNextStartNumber = (startNumber) => {
-        const validateDoubleCheck = (startNumber) => {
-            return startNumber in createdNumbers;
-        };
-        
-        let _startNumber = startNumber + 1 
-        while(validateDoubleCheck(_startNumber)){
-            _startNumber++;
-        }
-
-        return _startNumber;
-    };
-    
     const handleEventsStatus = (e) => {
         if(e.type === 'mousedown'){
             setEventsStatus({
@@ -75,40 +51,62 @@ export default function SeatsCreationBoardContainer({ room, useSeats }){
         }
     };
     
-    const selectValue = {
-        number: startNumber,
-        status: 'create'
-    };
+    const [createdNumbers, setCreatedNumbers] = useState({});
+    const getNextStartNumber = () => {
+        const validateDoubleCheck = (number) => {
+            return number in createdNumbers;
+        };
+        
+        let startNumber = null;
+        const seatCount = colSeatCount * rowSeatCount;
+        for(let number = 1; number <= seatCount; number++){
+            if(!validateDoubleCheck(number)){
+                startNumber = number;
+                break;
+            }
+        }
 
+        return startNumber;
+    };
     const createSeat = (x, y) => {
         if(seats[y][x]) return;
-
-        setSeats(seats.map(makeSeatCb(x, y, selectValue)));
+        
+        const seat = {
+            number: startNumber,
+            status: 'create'
+        };
+        
+        setSeats(seats.map(makeSeatCb(x, y, seat)));
         setCreatedNumbers({
             ...createdNumbers,
             [startNumber]: true
         });
-        setStartNumber(getNextStartNumber(startNumber));
     }
- 
-    const handleSeatSelectClick = (e, x, y) => {
+    useEffect(() => {
+        setStartNumber(getNextStartNumber());
+    }, [createdNumbers]);
+
+    const handleSeatSelect = (e, x, y) => {
         e.stopPropagation();
+
+        if(e.type === 'mousedown'){
+            setEventsStatus({
+                ...eventsStatus,
+                mousedown: true
+            });
+        }
 
         createSeat(x, y);
     };
-
     const handleSeatSelectDrag = (e, x, y) => {
         if(!eventsStatus.mousedown) return;
        
         createSeat(x, y);
     };
-
     const handleSeatCancelClick = (x, y, number) => {
         if(!seats[y][x]) return;
 
         setSeats(seats.map(makeSeatCb(x, y, null)));
-        setStartNumber(number);
-        
         const _createdNumbers = {...createdNumbers};
         delete _createdNumbers[number];
         setCreatedNumbers({..._createdNumbers});
@@ -125,7 +123,7 @@ export default function SeatsCreationBoardContainer({ room, useSeats }){
                 onMouseUp: handleEventsStatus
             },
             seat: {
-                handleSeatSelectClick,
+                handleSeatSelect,
                 handleSeatSelectDrag,
                 handleSeatCancelClick
             }

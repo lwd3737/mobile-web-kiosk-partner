@@ -7,6 +7,7 @@ import { Head, SimpleButton } from 'common/components';
 import { SeatsCreationBoardContainer } from './containers';
 import { SeatsInfo } from '../components';
 import { getRoomThunk } from 'modules/rooms';
+import { CREATE_SEATS_FAILED, createSeatsThunk } from 'modules/seats';
 
 export default function SeatsCreationPage(){
     const dispatch = useDispatch();
@@ -62,7 +63,44 @@ export default function SeatsCreationPage(){
     };
 
     const handleSeatsCreationClick = () => {
-;
+        const parsingSeats = (seats) => {
+            const _seats = [];
+            seats.forEach(row => {
+                row.forEach(seat => {
+                    if(!seat) return;
+
+                    const { number } = seat;
+                    const _seat = {
+                        number
+                    };
+
+                    _seats.push(_seat)
+                });
+            });
+            return _seats;
+        };
+
+        const successCb = () => {
+            alert('좌석이 성공적으로 생성되었습니다.');
+            history.replace(`/partner/rooms`);
+        }
+
+        const failedCb = (getState) => {
+            const error = getState()
+                .appStatus.errors.find(error => {
+                    return error.type === CREATE_SEATS_FAILED;
+                })
+            alert(`좌석을 생성할 수 없습니다. \n${error}`);
+        };
+
+        const seats = parsingSeats(useSeats[0]);
+        dispatch(createSeatsThunk({ 
+            partnerId: partner.id,
+            roomId: room.id,
+            seats
+        }, {
+            successCb
+        }));
     };
 
     return (
@@ -88,7 +126,9 @@ export default function SeatsCreationPage(){
                 >
                     공간 수정
                 </SimpleButton>
-                <SimpleButton>
+                <SimpleButton
+                    onClick={handleSeatsCreationClick}
+                >
                     좌석 생성
                 </SimpleButton>
             </div>

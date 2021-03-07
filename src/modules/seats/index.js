@@ -7,7 +7,7 @@ const GET_SEAT_LIST_FAILED = 'seats/GET_SEAT_LIST_FAILED';
 
 const CREATE_SEATS = 'seats/CREATE_SEATS';
 const CREATE_SEATS_SUCCESS = 'seats/CREATE_SEATS_SUCCESS';
-const CREATE_SEATS_FAILED = 'seats/CREATE_SEATS_FAILED';
+export const CREATE_SEATS_FAILED = 'seats/CREATE_SEATS_FAILED';
 
 export const createSeatsThunk = createAsyncThunk(CREATE_SEATS, seatsApi.createSeats);
 
@@ -18,25 +18,25 @@ const initialState = {
 
 function handleSuccess(state, action){
     switch(action.type){
-        case CREATE_SEATS_SUCCESS:
-            // const {
-            //     id,
-            //     number,
-            //     roomId,
-            //     isAvailable,
-            //     useTicketIdInUse
-            // } = action.payload;
+        case CREATE_SEATS_SUCCESS: {
+            const seats = action.payload;
 
             return {
                 ...state,
                 byId: {
                     ...state.byId,
-                    [action.payload.id]: {
-                        ...action.payload
-                    }
+                    ...seats.reduce((obj, seat) => {
+                        obj[seat.id] = {
+                            ...seat
+                        }
+                        console.log('obj: ', obj);
+                        return obj;
+                    }, {})
                 },
-                allIds: state.allIds.concat(action.payload.id)
+                allIds: state.allIds.concat(seats.map(seat => seat.id))
             };
+        }
+
     }
 }
 
@@ -44,7 +44,7 @@ function handleSuccess(state, action){
 export default function seatsReducer(state = initialState, action){
     switch(action.type){
         case CREATE_SEATS_SUCCESS:
-            return handleSuccess;
+            return handleSuccess(state, action);
         default:
             return state;
     }

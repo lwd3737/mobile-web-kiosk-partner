@@ -97,7 +97,7 @@ const S = {
                 width: 20vw;
 
                 &[type=number]{
-                    width: 5vw;
+                    width: 10vw;
                 }
             }
         }

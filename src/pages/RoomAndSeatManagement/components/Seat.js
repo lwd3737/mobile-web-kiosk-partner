@@ -20,12 +20,13 @@ export default function Seat({
             onMouseEnter: null
         };
         const { 
-            handleSeatSelectClick, 
+            handleSeatSelect, 
             handleSeatSelectDrag,
         } = handlers || {};
 
-        if(handleSeatSelectClick){
-            _handlers.onClick = (e) => handleSeatSelectClick(e, x, y);
+        if(handleSeatSelect){
+            _handlers.onClick = (e) => handleSeatSelect(e, x, y);
+            _handlers.onMouseDown = (e) => handleSeatSelect(e, x, y);
         } 
         if(handleSeatSelectDrag){
             _handlers.onMouseEnter = (e) => handleSeatSelectDrag(e, x, y);

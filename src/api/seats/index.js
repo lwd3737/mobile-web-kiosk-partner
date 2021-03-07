@@ -1,7 +1,7 @@
-import client from './client';
+import client from '../client';
 
-export const createRooms = async ({ partnerId, roomId, seats }) => {
-    const res = await client.post(`/partner/rooms/${roomId}/seats`, {
+export const createSeats = async ({ partnerId, roomId, seats }) => {
+    const res = await client.post(`/rooms/${roomId}/seats`, {
         partnerId,
         seats
     });
