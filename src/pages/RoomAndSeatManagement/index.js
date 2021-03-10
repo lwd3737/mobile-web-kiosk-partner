@@ -6,6 +6,7 @@ import RoomListPage from './RoomListPage';
 import RoomCreationPage from './RoomCreationPage';
 import RoomModifyPage from './RoomModifyPage';
 import SeatsCreationPage from './SeatsCreationPage';
+import SeatsModifyPage from './SeatsModifyPage';
 
 export default function RoomAndSeatManagement(){
     const { path } = useRouteMatch();
@@ -29,6 +30,10 @@ export default function RoomAndSeatManagement(){
             </Route>
             <Route exact path={`${path}/:roomId/seats/creation`}>
                 <SeatsCreationPage
+                />
+            </Route>
+            <Route exact path={`${path}/:roomId/seats/modify`}>
+                <SeatsModifyPage
                 />
             </Route>
         </Switch>

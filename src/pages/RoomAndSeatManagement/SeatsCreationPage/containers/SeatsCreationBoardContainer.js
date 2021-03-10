@@ -16,27 +16,17 @@ const makeSeatCb = (x, y, value) => {
     }
 };
 
-export default function SeatsCreationBoardContainer({ room, useSeats }){
+export default function SeatsCreationBoardContainer({ 
+    seats,
+    setSeats,
+    rowSeatCount,
+    colSeatCount,
+}){
     const [eventsStatus, setEventsStatus] = useState({
         mousedown: false,
     });
     const [startNumber, setStartNumber] = useState(1);
-
-    const { colSeatCount, rowSeatCount } = room;
-    const [seats, setSeats] = useSeats;
-    useEffect(function initializeSeats(){
-        const seats = [];
-
-        for(let y = 0; y < rowSeatCount; y++){
-            seats.push([]);
-            for(let x = 0; x < colSeatCount; x++){
-                seats[y].push(null);
-            }
-        }
-
-        setSeats(seats);
-    }, []);
-
+    
     const handleEventsStatus = (e) => {
         if(e.type === 'mousedown'){
             setEventsStatus({
@@ -82,6 +72,7 @@ export default function SeatsCreationBoardContainer({ room, useSeats }){
             [startNumber]: true
         });
     }
+
     useEffect(() => {
         setStartNumber(getNextStartNumber());
     }, [createdNumbers]);
@@ -93,7 +84,7 @@ export default function SeatsCreationBoardContainer({ room, useSeats }){
             setEventsStatus({
                 ...eventsStatus,
                 mousedown: true
-            });
+            })
         }
 
         createSeat(x, y);

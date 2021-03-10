@@ -41,13 +41,16 @@ function RoomItem({
 }){
     const renderSeatStatus = () => {
         if(hasSeats){
+            console.log('status: ', seatCountInUse, seatCount)
             return (
-                <span className="seat-count-in-use">
-                    {seatCountInUse}
-                </span> /  
-                <span className="total-seat-count">
-                    {seatCount}
-                </span>
+                <>
+                    <span className="seat-count-in-use">
+                        {String(seatCountInUse)}
+                    </span> /  
+                    <span className="total-seat-count">
+                        {seatCount}
+                    </span>
+                </>
             )
         } else {
             return (
@@ -61,7 +64,8 @@ function RoomItem({
     return (
         <Card
             style={{
-                marginBottom: '7vw'
+                marginBottom: '7vw',
+                marginRight: '3vw'
             }}
         >
             <S.RoomItem
@@ -98,10 +102,11 @@ const S = {
     RoomList: styled.ul`
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-between;
+        justify-content: flex-start;
+        padding-left: 3vw;
     `,
     RoomItem: styled.div`
-        width: 15vw;    
+        width: 15vw;
 
         &:hover{
             cursor: pointer;

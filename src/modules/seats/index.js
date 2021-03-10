@@ -29,7 +29,7 @@ function handleSuccess(state, action){
                         obj[seat.id] = {
                             ...seat
                         }
-                        console.log('obj: ', obj);
+                        //console.log('obj: ', obj);
                         return obj;
                     }, {})
                 },

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useHistory } from 'react-router-dom';
@@ -6,34 +6,23 @@ import { useParams, useHistory } from 'react-router-dom';
 import { Head, SimpleButton } from 'common/components';
 import { SeatsCreationBoardContainer } from './containers';
 import { SeatsInfo } from '../components';
-import { getRoomThunk } from 'modules/rooms';
 import { CREATE_SEATS_FAILED, createSeatsThunk } from 'modules/seats';
+import { useRoom, useSeats, useSeatsSerialization } from 'common/hooks';
 
 export default function SeatsCreationPage(){
     const dispatch = useDispatch();
     const history = useHistory();
 
-    const { roomId } = useParams();
-    const room = useSelector(state => state.rooms.byId[roomId]);
     const partner = useSelector(state => state.auth.partner);
-    useEffect(() => {
-        dispatch(getRoomThunk({
-            partnerId: partner.id, 
-            roomId
-        }));
-    }, []);
+    const { roomId } = useParams();
+    const room = useRoom(partner.id, roomId);
+    const { name, rowSeatCount, colSeatCount, seatCount } = room;
+    const [seats, setSeats] = useSeats(rowSeatCount, colSeatCount);
 
-    const useSeats = useState([]);
 
     const renderContents = (room) => {
         if(!room) return null;
 
-        const { 
-            name, 
-            colSeatCount, 
-            rowSeatCount, 
-            seatCount 
-        } = room;
         const seatsInfo = [
             ['총 좌석 수', seatCount],
             ['가로 좌석 수(길이)', rowSeatCount],
@@ -42,9 +31,11 @@ export default function SeatsCreationPage(){
 
         return (
             <>
-                <SeatsCreationBoardContainer 
-                    room={room}
-                    useSeats={useSeats}
+                <SeatsCreationBoardContainer
+                    seats={seats}
+                    setSeats={setSeats}
+                    rowSeatCount={rowSeatCount}
+                    colSeatCount={colSeatCount}
                 />
                 <SeatsInfo 
                     roomName={name}
@@ -58,32 +49,32 @@ export default function SeatsCreationPage(){
         history.replace('/partner/rooms');
     };
 
-    const handleMoveRoomCreationClick = () => {
+    const handleMoveRoomModifyClick = () => {
         history.replace(`/partner/rooms/${roomId}/modify`);
     };
 
     const handleSeatsCreationClick = () => {
-        const parsingSeats = (seats) => {
-            const _seats = [];
+        const parseSeats = (seats) => {
+            const parsed = [];
+
             seats.forEach(row => {
                 row.forEach(seat => {
                     if(!seat) return;
 
                     const { number } = seat;
-                    const _seat = {
+                    parsed.push({
                         number
-                    };
-
-                    _seats.push(_seat)
+                    });
                 });
             });
-            return _seats;
+
+            return parsed;
         };
 
         const successCb = () => {
             alert('좌석이 성공적으로 생성되었습니다.');
             history.replace(`/partner/rooms`);
-        }
+        };
 
         const failedCb = (getState) => {
             const error = getState()
@@ -93,13 +84,13 @@ export default function SeatsCreationPage(){
             alert(`좌석을 생성할 수 없습니다. \n${error}`);
         };
 
-        const seats = parsingSeats(useSeats[0]);
         dispatch(createSeatsThunk({ 
             partnerId: partner.id,
             roomId: room.id,
-            seats
+            seats: parseSeats(seats)
         }, {
-            successCb
+            successCb,
+            failedCb
         }));
     };
 
@@ -122,7 +113,7 @@ export default function SeatsCreationPage(){
                 </SimpleButton>
                 <SimpleButton
                     backgroundColor='blue1'
-                    onClick={handleMoveRoomCreationClick}
+                    onClick={handleMoveRoomModifyClick}
                 >
                     공간 수정
                 </SimpleButton>
