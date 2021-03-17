@@ -5,16 +5,21 @@ export default function SeatsInfo({ children, roomName, seatsInfo }){
     const renderSeatsInfo = () => {
         if(children) return children;
 
-        return seatsInfo.map(info => (
-            <div className="info">
-                <label>
-                    {info[0]}:
-                </label>
-                <span>
-                    {info[1]}
-                </span>
-            </div>
-        ));
+        return seatsInfo.map(info => {
+
+            const { label, value } = info;
+
+            return (
+                <div className="info">
+                    <label>
+                        {label}:
+                    </label>
+                    <span>
+                        {value}
+                    </span>
+                </div>
+            )
+        });
     };
 
     return (

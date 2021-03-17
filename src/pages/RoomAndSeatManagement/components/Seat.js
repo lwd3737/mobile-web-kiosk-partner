@@ -46,7 +46,7 @@ export default function Seat({
             )}
             {isStatusCreateOrModify(status) && (
                 <div className="cancel"
-                    onClick={() => handlers.handleSeatCancelClick(x, y, number)}
+                    onClick={(e) => handlers.handleSeatCancelClick(e, x, y, number)}
                 >
                     X
                 </div>

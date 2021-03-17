@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import styled, { css } from 'styled-components';
+import React from 'react';
+import styled from 'styled-components';
 
 import Seat from './Seat';
 
@@ -49,7 +49,7 @@ const S = {
     SeatsBoard: styled.div`
         width: 70vw;
         max-height: 70vh;
-        overflow: scroll;
+        overflow: auto;
 
         .number-display{
             padding: 10px;
