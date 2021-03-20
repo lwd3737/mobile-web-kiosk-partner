@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 import { 
-    SeatsForm,
+    SeatsDetail,
 } from 'pages/RoomAndSeatManagement/components';
 import { 
     createSeatsThunk,
@@ -14,15 +14,14 @@ import {
 import { useRoom, useSeats } from 'common/hooks';
 
 
-export default function SeatsFormContainer({ type, seatsData }){
+export default function SeatsFormContainer({ type, seatsData = null}){
     const dispatch = useDispatch();
     const history = useHistory();
 
     const partner = useSelector(state => state.auth.partner);
-    const { roomId } = useParams();
-    const room = useRoom(partner.id, roomId);
+    const room = useRoom();
     const { name, rowSeatCount, colSeatCount, seatCount } = room;
-    const [seats, setSeats] = useSeats(rowSeatCount, colSeatCount);
+    const [seats, setSeats] = useSeats(rowSeatCount, colSeatCount, seatsData);
     const [eventsStatus, setEventsStatus] = useState({
         mousedown: false,
     });
@@ -92,32 +91,25 @@ export default function SeatsFormContainer({ type, seatsData }){
         return startNumber;
     };
     
-    useEffect(function renderSeatsData(){
+    useEffect(function updateCreatedNumbers(){
         if(type !== 'modify') return;
 
-        const newSeats = [...seats];
         const newCreatedNumbers = {};
-        seatsData.forEach(data => {
-            const { x, y, number } = data;
 
-            data.status = type;
-            newSeats[y][x] = data;
-            newCreatedNumbers[number] = true;
+        seatsData.forEach(data => {
+            newCreatedNumbers[data.number] = true;
         });
 
-        setSeats(newSeats);
         setCreatedNumbers(newCreatedNumbers);
-    }, []);
+    }, [seatsData]);
 
     useEffect(() => {
         setStartNumber(getNextStartNumber());
     }, [createdNumbers]);
 
-
-
     const handleSeatSelect = (e, x, y) => {
         e.stopPropagation();
-
+        console.log('x, y: ', x, y);
         if(e.type === 'mousedown'){
             setEventsStatus({
                 ...eventsStatus,
@@ -129,12 +121,11 @@ export default function SeatsFormContainer({ type, seatsData }){
     };
     const handleSeatSelectDrag = (e, x, y) => {
         if(!eventsStatus.mousedown) return;
-       
         createSeat(x, y);
     };
     const handleSeatCancelClick = (e, x, y, number) => {
         e.stopPropagation();
-
+        
         if(!seats[y][x]) return;
 
         const newSeats = [...seats];
@@ -150,7 +141,7 @@ export default function SeatsFormContainer({ type, seatsData }){
         history.replace('/partner/rooms');
     };
     const handleMoveRoomModifyClick = () => {
-        history.replace(`/partner/rooms/${roomId}/modify`);
+        history.replace(`/partner/rooms/${room.id}/modify`);
     };
 
     let nextBtnText;
@@ -182,11 +173,7 @@ export default function SeatsFormContainer({ type, seatsData }){
                         x,
                         y
                     };
-
-                    // if(type === 'modify'){
-                    //     data.id = id;
-                    // }
-
+                   
                     parsed.push(data);
                 });
             });
@@ -220,7 +207,7 @@ export default function SeatsFormContainer({ type, seatsData }){
 
   
 
-    return <SeatsForm
+    return <SeatsDetail
         seats={seats}
         data={{
             startNumber

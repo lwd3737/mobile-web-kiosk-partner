@@ -3,13 +3,13 @@ import styled from 'styled-components';
 
 import Seat from './Seat';
 
-export default function SeatsBoard({ seats, data = {}, handlers }){
+export default function SeatsBoard({ seats, data = {}, handlers, seatDefaultBgColor }){
     const { startNumber } = data;
     
     const renderSeats = () => {
         return (
             <div className="handlers-area"
-                {...handlers.board}
+                {...handlers?.board}
             >
                 {seats.map((row, y) => {
                     const cols = row.map((seat, x) => <Seat 
@@ -17,7 +17,8 @@ export default function SeatsBoard({ seats, data = {}, handlers }){
                         x={x}
                         y={y}
                         {...seat}
-                        handlers={handlers.seat}
+                        handlers={handlers?.seat}
+                        defaultBgColor={seatDefaultBgColor}
                     />)
 
                     return (
@@ -47,7 +48,7 @@ export default function SeatsBoard({ seats, data = {}, handlers }){
 
 const S = {
     SeatsBoard: styled.div`
-        width: 70vw;
+        width: 65%;
         max-height: 70vh;
         overflow: auto;
 

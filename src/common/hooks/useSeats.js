@@ -14,14 +14,19 @@ export default function useSeats(rowSeatCount, colSeatCount, seatsData){
         return _seats;
     };
 
-    const seats = initializeSeats(); 
+    const [seats, setSeats] = useState(initializeSeats());
+
+    useEffect(() => {
+        if(seatsData && seatsData.length > 0){
+            const _seats = seats.map(row => [...row]);
+            seatsData.forEach(seat => {
+                const { x, y } = seat;
+                _seats[y][x] = seat;
+            });
     
-    if(seatsData){
-        seatsData.forEach(seat => {
-            const { x, y } = seat;
-            seats[y][x] = seat;
-        });
-    } 
+            setSeats(_seats);
+        } 
+    }, [seatsData]);
     
-    return useState(seats);
+    return [seats, setSeats];
 }

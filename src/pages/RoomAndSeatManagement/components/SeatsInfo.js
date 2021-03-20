@@ -37,7 +37,7 @@ export default function SeatsInfo({ children, roomName, seatsInfo }){
 
 const S = {
     SeatsInfo: styled.div`
-        width: 30%;
+        width: 35%;
         padding: 10px 0;
 
         .room-name{

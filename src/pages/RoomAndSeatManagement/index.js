@@ -1,5 +1,4 @@
 import React from 'react';
-import styled from 'styled-components';
 import { Switch, Route, useRouteMatch  } from 'react-router-dom';
 
 import RoomListPage from './RoomListPage';
@@ -7,6 +6,7 @@ import RoomCreationPage from './RoomCreationPage';
 import RoomModifyPage from './RoomModifyPage';
 import SeatsCreationPage from './SeatsCreationPage';
 import SeatsModifyPage from './SeatsModifyPage';
+import SeatsDisplayPage from './SeatsDisplayPage';
 
 export default function RoomAndSeatManagement(){
     const { path } = useRouteMatch();
@@ -26,7 +26,8 @@ export default function RoomAndSeatManagement(){
                 />
             </Route>
             <Route exact path={`${path}/:roomId/seats`}>
-                seats
+                <SeatsDisplayPage 
+                />
             </Route>
             <Route exact path={`${path}/:roomId/seats/creation`}>
                 <SeatsCreationPage

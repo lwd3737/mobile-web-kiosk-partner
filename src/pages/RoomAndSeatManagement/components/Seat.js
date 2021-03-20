@@ -1,18 +1,15 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-const isStatusCreateOrModify = (status) => {
-    if(status === 'create' || status === 'modify') return true;
-    return false;
-};
-
 export default function Seat({ 
     x, 
     y, 
     id, 
-    number, 
+    number,
+    isAvailable, 
     status,
-    handlers 
+    handlers,
+    defaultBgColor
 }){
     const bindHandlers = () => {
         const _handlers = {
@@ -38,13 +35,15 @@ export default function Seat({
 
     return (
         <S.Seat
+            isAvailable={isAvailable}
             status={status}
+            defaultBgColor={defaultBgColor || 'rgba(0,0,0,0.05)'}
             {...bindHandlers()}
         >
             {number && (
                 <div className="number">{number}</div>
             )}
-            {isStatusCreateOrModify(status) && (
+            {status === 'create' || status === 'modify' && (
                 <div className="cancel"
                     onClick={(e) => handlers.handleSeatCancelClick(e, x, y, number)}
                 >
@@ -58,12 +57,15 @@ export default function Seat({
 
 const S = {
     Seat: styled.div`
-        ${({ theme, status }) => {
+        ${({ theme, status, isAvailable, defaultBgColor }) => {
             const { colors } = theme;
             let backgroundColor;
-            
-            if(isStatusCreateOrModify(status)){
+          
+            if(status === 'create' || status === 'modify'){
                 backgroundColor = colors.green1;
+            } else if(status === 'display'){
+                backgroundColor = isAvailable 
+                    ? 'rgba(0,0,0,0.1)' : '#ea2a289c' ; 
             }
             
             return css`
@@ -73,7 +75,7 @@ const S = {
                 min-height: 45px;
                 margin: 0.8rem;
                 border-radius: 10px;
-                background: ${backgroundColor || 'rgba(0,0,0,0.05)'};
+                background: ${backgroundColor || defaultBgColor};
                 text-align: center;
 
                 &:hover{

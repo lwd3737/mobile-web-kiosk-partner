@@ -5,7 +5,7 @@ import { SimpleButton } from 'common/components';
 import SeatsBoard from './SeatsBoard';
 import SeatsInfo from './SeatsInfo';
 
-export default function SeatsForm({ 
+export default function SeatsDetail({ 
     seats,
     data,
     boardHandlers,
@@ -14,15 +14,17 @@ export default function SeatsForm({
     handleMoveRoomListClick,
     handleMoveRoomModifyClick,
     nextBtnText,
-    handleNextClick
+    handleNextClick,
+    seatDefaultBgColor
  }){
     return (
-        <S.SeatsForm>
-            <div className="control">
+        <S.SeatsDetail>
+            <div className="contents">
                 <SeatsBoard
                     seats={seats}
                     data={data}
                     handlers={boardHandlers}
+                    seatDefaultBgColor={seatDefaultBgColor}
                 />
                 <SeatsInfo 
                     roomName={roomName}
@@ -35,7 +37,7 @@ export default function SeatsForm({
                     backgroundColor='gray1'
                     onClick={handleMoveRoomListClick}
                 >
-                    목록
+                    공간 목록
                 </SimpleButton>
                 <SimpleButton
                     backgroundColor='blue1'
@@ -49,14 +51,15 @@ export default function SeatsForm({
                     {nextBtnText}
                 </SimpleButton>
             </div>
-        </S.SeatsForm>
+        </S.SeatsDetail>
     )
 }
 
 const S = {
-    SeatsForm: styled.div`
-        .control{
+    SeatsDetail: styled.div`
+        .contents{
             display: flex;
+            padding: 4vh 0;
 
             .board{
                 display: flex;
@@ -65,7 +68,7 @@ const S = {
             }
 
         }
-        
+
         .btn-wrapper{
             display: flex;
             justify-content: flex-end;

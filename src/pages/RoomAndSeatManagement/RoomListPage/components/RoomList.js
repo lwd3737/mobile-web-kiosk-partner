@@ -44,6 +44,7 @@ function RoomItem({
             console.log('status: ', seatCountInUse, seatCount)
             return (
                 <>
+                    <label>좌석 : </label>
                     <span className="seat-count-in-use">
                         {String(seatCountInUse)}
                     </span> /  

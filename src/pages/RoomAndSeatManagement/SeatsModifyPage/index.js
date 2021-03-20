@@ -3,12 +3,12 @@ import styled from 'styled-components';
 
 import { Head } from 'common/components';
 import { SeatsFormContainer } from 'pages/RoomAndSeatManagement/containers';
-import { useFetchSeats } from 'common/hooks';
+import { useFetchSeatsData } from 'common/hooks';
 
 export default function SeatsModifyPage(){
-    const seatsData = useFetchSeats();
-
-    if(!seatsData) return null;
+    const seatsData = useFetchSeatsData({ status: 'modify' });
+    
+    if(!seatsData || seatsData.length === 0) return null;
 
     return (
         <S.SeatsModifyPage>
@@ -26,19 +26,5 @@ export default function SeatsModifyPage(){
 
 const S = {
     SeatsModifyPage: styled.div`
-        .board{
-            display: flex;
-            margin-bottom: 100px;
-            padding: 0 !important;
-        }
-
-        .btn-wrapper{
-            display: flex;
-            justify-content: flex-end;
-
-            & > *{
-                margin-right: 1.5vw;
-            }
-        }
     `
-}
+};
