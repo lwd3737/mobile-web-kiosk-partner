@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components'
+import { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
     *{
@@ -59,11 +59,11 @@ const GlobalStyle = createGlobalStyle`
     button:hover{
         cursor: pointer;
     }
-    input{
+    input, select{
         border: 1px solid rgba(0,0,0,0.1);
         border-radius: 8px;
         padding: 10px 15px;
     }
-`
+`;
 
-export default GlobalStyle
+export default GlobalStyle;

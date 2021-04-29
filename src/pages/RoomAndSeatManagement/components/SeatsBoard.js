@@ -1,65 +1,60 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import Seat from './Seat';
+import Seat from "./Seat";
 
-export default function SeatsBoard({ seats, data = {}, handlers, seatDefaultBgColor }){
-    const { startNumber } = data;
-    
-    const renderSeats = () => {
-        return (
-            <div className="handlers-area"
-                {...handlers?.board}
-            >
-                {seats.map((row, y) => {
-                    const cols = row.map((seat, x) => <Seat 
-                        key={`${x},${y}`}
-                        x={x}
-                        y={y}
-                        {...seat}
-                        handlers={handlers?.seat}
-                        defaultBgColor={seatDefaultBgColor}
-                    />)
+export default function SeatsBoard({
+  seats,
+  data = {},
+  handlers,
+  seatDefaultBgColor,
+}) {
+  const { startNumber } = data;
 
-                    return (
-                        <div className="row">
-                            {cols}
-                        </div>
-                    )
-                })}
-            </div>
-        ) 
-    };
-
-    
+  const renderSeats = () => {
     return (
-        <S.SeatsBoard>
-            {startNumber && (
-                <div className="number-display">
-                    {startNumber} 번 부터 시작
-                </div>
-            )}
-            <div className="seats">
-                {renderSeats()}
-            </div>
-        </S.SeatsBoard>
-    )
+      <div className="handlers-area" {...handlers?.board}>
+        {seats.map((row, y) => {
+          const cols = row.map((seat, x) => (
+            <Seat
+              key={`${x},${y}`}
+              x={x}
+              y={y}
+              {...seat}
+              handlers={handlers?.seat}
+              defaultBgColor={seatDefaultBgColor}
+            />
+          ));
+
+          return <div className="row">{cols}</div>;
+        })}
+      </div>
+    );
+  };
+
+  return (
+    <S.SeatsBoard>
+      {startNumber && (
+        <div className="number-display">{startNumber} 번 부터 시작</div>
+      )}
+      <div className="seats">{renderSeats()}</div>
+    </S.SeatsBoard>
+  );
 }
 
 const S = {
-    SeatsBoard: styled.div`
-        width: 65%;
-        max-height: 70vh;
-        overflow: auto;
+  SeatsBoard: styled.div`
+    width: 80%;
+    max-height: 70vh;
+    overflow: auto;
 
-        .number-display{
-            padding: 10px;
-            margin-bottom: 3vh;
-        }
+    .number-display {
+      padding: 10px;
+      margin-bottom: 3vh;
+    }
 
-        .row{
-            display: flex;
-        }
-    `,
-}
-
+    .row {
+      display: flex;
+    }
+  `,
+};
