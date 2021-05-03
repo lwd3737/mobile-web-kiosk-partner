@@ -16,6 +16,8 @@ function UseTicketDefinitionCreationPage() {
   const handleUseTicketCategoryClick = () => {
     const categoryName = prompt("이용권 종류 이름");
 
+    if (!categoryName || categoryName.length === 0) return null;
+
     const successCb = () => {
       window.alert("이용권 종류가 추가되었습니다.");
     };

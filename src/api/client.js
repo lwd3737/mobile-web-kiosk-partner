@@ -1,13 +1,11 @@
-import axios from 'axios';
+import axios from "axios";
 
-const jsonServer = 'http://127.0.0.1:4000';
-const devServer = 'http://127.0.0.1:5000/partner';
+//const jsonServer = 'http://127.0.0.1:4000';
+const devServer = "http://127.0.0.1:5000/partner";
 
-const client = axios.create({
-    baseURL: devServer,
-    headers: {
-        'Content-Type': 'application/json'
-    }
-});
+axios.defaults.baseURL = devServer;
+axios.defaults.headers.common["Content-Type"] = "application/json";
 
-export default client;
+export default axios;
+
+export const client = axios.create();

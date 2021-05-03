@@ -1,25 +1,40 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 
 import { UseTicketDefinitionCreationForm } from "../components";
 import {
   CREATE_USETICKET_DEFINITION_FAILED,
+  GET_USETICKET_CATEGORIES_FAILED,
   createUseticketDefinitionThunk,
+  getUseTicketCategoriesThunk,
 } from "modules/usetickets";
 
 function UseTicketDefinitionCreationFormContainer() {
   const history = useHistory();
   const dispatch = useDispatch();
+
   const partnerId = useSelector((state) => state.auth.partner.id);
-  const categoriesSlice = useSelector((state) => state.usetickets.categories);
+
   const [inputs, setInputs] = useState({
     name: null,
-    periodUnit: "H",
+    periodUnit: null,
     period: null,
     price: null,
   });
   const { name, periodUnit, period, price } = inputs;
+
+  const handleOptionDeleteClick = (e) => {
+    e.stopPropagation();
+  };
+  const categoriesSlice = useSelector((state) => state.usetickets.categories);
+  const categoryOptions = categoriesSlice.allIds.map((_id) => {
+    const { id, name } = categoriesSlice.byId[_id];
+    return {
+      label: name,
+      value: id,
+    };
+  });
 
   const fields = [
     {
@@ -27,9 +42,7 @@ function UseTicketDefinitionCreationFormContainer() {
       inputId: "useticket-name",
       inputType: "select",
       inputName: "name",
-      options: categoriesSlice.allIds.map((category) => {
-        return [category.name, category.id];
-      }),
+      options: categoryOptions,
       value: name,
     },
     {
@@ -38,10 +51,22 @@ function UseTicketDefinitionCreationFormContainer() {
       inputType: "select",
       inputName: "periodUnit",
       options: [
-        ["시간", "H"],
-        ["일", "D"],
-        ["주", "W"],
-        ["개월", "M"],
+        {
+          label: "시간",
+          value: "H",
+        },
+        {
+          label: "일",
+          value: "D",
+        },
+        {
+          label: "주",
+          value: "W",
+        },
+        {
+          label: "개월",
+          value: "M",
+        },
       ],
       value: periodUnit,
     },
@@ -117,6 +142,27 @@ function UseTicketDefinitionCreationFormContainer() {
   const handlePrevClick = () => {
     history.replace("/partner/usetickets");
   };
+
+  useEffect(function loadUseTicketCategories() {
+    const failedCb = (getState) => {
+      const error = getState().appStatus.errors.find(
+        (error) => error.type === GET_USETICKET_CATEGORIES_FAILED
+      );
+
+      error && window.alert(error.message);
+    };
+    dispatch(
+      getUseTicketCategoriesThunk({ partnerId }, { successCb: null, failedCb })
+    );
+  }, []);
+
+  useEffect(function initializeInputs() {
+    setInputs({
+      ...inputs,
+      name: categoryOptions[0].label,
+      periodUnit: fields[1].options[0].label,
+    });
+  }, []);
 
   return (
     <UseTicketDefinitionCreationForm

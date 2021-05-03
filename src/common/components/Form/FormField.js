@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 
+import { Dropdown } from "common/components";
+
 function FormField({
   labelText,
   inputId,
@@ -12,14 +14,16 @@ function FormField({
 }) {
   const renderInput = () => {
     if (inputType === "select") {
-      const _value = value || (options[0] && options[0][1]) || null;
+      const _value = value || (options.length > 0 && options[0].value) || null;
 
       return (
-        <select name={inputName} value={_value} onChange={onChange}>
-          {options.map((option) => (
-            <option value={option[1]}>{option[0]}</option>
-          ))}
-        </select>
+        <Dropdown
+          inputId={inputId}
+          inputName={inputName}
+          value={value}
+          options={options}
+          onInputChange={onChange}
+        />
       );
     } else {
       return (
@@ -63,10 +67,16 @@ const S = {
     }
 
     select {
-      width: 13vw;
+      width: fit-content;
       font-size: inherit;
       option {
-        text-align: center;
+        .label {
+          text-align: center;
+        }
+
+        .delete {
+          color: red;
+        }
       }
     }
   `,

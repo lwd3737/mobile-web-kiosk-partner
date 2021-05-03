@@ -1,7 +1,16 @@
-import client from "../client";
+import axios, { client } from "../client";
+
+export const getUseticketCategories = async ({ partnerId }) => {
+  const res = await client.get("usetickets/categories", {
+    params: {
+      partnerId,
+    },
+  });
+  return res.data;
+};
 
 export const createUseticketCatetory = async ({ partnerId, name }) => {
-  const res = await client.post("usetickets/category", {
+  const res = await client.post("usetickets/categories", {
     partnerId,
     name,
   });
