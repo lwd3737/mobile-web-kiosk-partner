@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
 
-function Dropdown({ inputId, inputName, value, options, onInputChange }) {
+function Dropdown({
+  inputId,
+  inputName,
+  value,
+  options,
+  onInputChange,
+  handlers,
+}) {
   const [selectedOption, setSelectedOption] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -47,7 +54,15 @@ function Dropdown({ inputId, inputName, value, options, onInputChange }) {
               className="option"
               onClick={(e) => handleSelectOption(e, option)}
             >
-              {option.label}
+              <span className="label">{option.label}</span>
+              {handlers.onOptionDelete && (
+                <span
+                  className="delete"
+                  onClick={(e) => handlers.onOptionDelete(e, selectedOption)}
+                >
+                  X
+                </span>
+              )}
             </li>
           ))}
       </ul>
@@ -79,11 +94,16 @@ const S = {
         width: inherit;
         border: 1px solid rgba(0, 0, 0, 0.1);
         border-radius: 8px;
-        padding: 10px 15px;
         background-color: white;
 
         .option {
-          margin: 10px 0;
+          padding: 20px 15px;
+          border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+          .delete {
+            color: red;
+            margin-left: 8px;
+          }
         }
       `}
     }

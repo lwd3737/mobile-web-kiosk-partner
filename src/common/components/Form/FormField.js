@@ -11,6 +11,7 @@ function FormField({
   value,
   options,
   onChange,
+  handlers,
 }) {
   const renderInput = () => {
     if (inputType === "select") {
@@ -20,9 +21,10 @@ function FormField({
         <Dropdown
           inputId={inputId}
           inputName={inputName}
-          value={value}
+          value={_value}
           options={options}
           onInputChange={onChange}
+          handlers={handlers}
         />
       );
     } else {

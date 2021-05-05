@@ -58,7 +58,11 @@ export default function appStatusReducer(state = initialState, action) {
       errors: state.errors.filter((error) => error.type !== action.type),
     };
   } else if (isFailedType(action.type)) {
-    const { message } = action.error;
+    const { error } = action;
+    const message = error.response?.data.errorMessage
+      ? error.response.data.errorMessage
+      : error.message;
+
     return {
       ...state,
       loading: removeLoading(state.loading, action.type),

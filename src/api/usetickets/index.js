@@ -18,6 +18,17 @@ export const createUseticketCatetory = async ({ partnerId, name }) => {
   return res.data;
 };
 
+export const deleteUseticketCategory = async ({ partnerId, id }) => {
+  const res = await client.delete("usetickets/categories", {
+    data: {
+      partnerId,
+      id,
+    },
+  });
+
+  return res.data;
+};
+
 export const createUseticketDefinition = async ({ partnerId, inputs }) => {
   const res = await client.post("/usetickets/definition", {
     partnerId,
