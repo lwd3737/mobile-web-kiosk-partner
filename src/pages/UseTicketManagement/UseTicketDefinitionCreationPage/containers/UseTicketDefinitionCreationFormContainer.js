@@ -17,33 +17,37 @@ function UseTicketDefinitionCreationFormContainer() {
   const partnerId = useSelector((state) => state.auth.partner.id);
 
   const [inputs, setInputs] = useState({
-    name: null,
+    categoryId: null,
     periodUnit: null,
     period: null,
     price: null,
   });
-  const { name, periodUnit, period, price } = inputs;
+  const { categoryId, periodUnit, period, price } = inputs;
 
   const handleOptionDeleteClick = (e) => {
     e.stopPropagation();
   };
   const categoriesSlice = useSelector((state) => state.usetickets.categories);
-  const categoryOptions = categoriesSlice.allIds.map((_id) => {
-    const { id, name } = categoriesSlice.byId[_id];
-    return {
-      label: name,
-      value: id,
-    };
-  });
+  const categoryOptions = useMemo(
+    () =>
+      categoriesSlice.allIds.map((_id) => {
+        const { id, name } = categoriesSlice.byId[_id];
+        return {
+          label: name,
+          value: id,
+        };
+      }),
+    [categoriesSlice]
+  );
 
   const fields = [
     {
       labelText: "이용권 종류",
-      inputId: "useticket-name",
+      inputId: "useticket-category",
       inputType: "select",
-      inputName: "name",
+      inputName: "categoryId",
       options: categoryOptions,
-      value: name,
+      value: categoryId,
     },
     {
       labelText: "이용시간 단위",
@@ -96,14 +100,14 @@ function UseTicketDefinitionCreationFormContainer() {
   };
 
   const handleCreationClick = () => {
-    const { name, periodUnit, period, price } = inputs;
+    const { catgoryId, periodUnit, period, price } = inputs;
 
     const makeMessage = (text) => {
       return `${text}을(를) 입력해주세요.`;
     };
 
-    if (!name) {
-      return alert(makeMessage("이용권 이름"));
+    if (!catgoryId) {
+      return alert(makeMessage("이용권 종류"));
     }
     if (!periodUnit) {
       return alert(makeMessage("이용시간 단위"));
@@ -156,13 +160,16 @@ function UseTicketDefinitionCreationFormContainer() {
     );
   }, []);
 
-  useEffect(function initializeInputs() {
-    setInputs({
-      ...inputs,
-      name: categoryOptions[0].label,
-      periodUnit: fields[1].options[0].label,
-    });
-  }, []);
+  useEffect(
+    function initializeInputs() {
+      setInputs({
+        ...inputs,
+        categoryId: categoryOptions[0]?.value,
+        periodUnit: fields[1].options[0].label,
+      });
+    },
+    [categoryOptions]
+  );
 
   return (
     <UseTicketDefinitionCreationForm

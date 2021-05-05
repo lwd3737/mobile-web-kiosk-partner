@@ -59,7 +59,7 @@ const GlobalStyle = createGlobalStyle`
     button:hover{
         cursor: pointer;
     }
-    input, select{
+    input, .selected{
         border: 1px solid rgba(0,0,0,0.1);
         border-radius: 8px;
         padding: 10px 15px;

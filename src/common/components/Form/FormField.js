@@ -65,19 +65,5 @@ const S = {
         width: 10vw;
       }
     }
-
-    select {
-      width: fit-content;
-      font-size: inherit;
-      option {
-        .label {
-          text-align: center;
-        }
-
-        .delete {
-          color: red;
-        }
-      }
-    }
   `,
 };
