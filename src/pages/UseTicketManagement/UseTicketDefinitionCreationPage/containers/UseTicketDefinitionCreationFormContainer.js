@@ -7,7 +7,7 @@ import {
   CREATE_USETICKET_DEFINITION_FAILED,
   GET_USETICKET_CATEGORIES_FAILED,
   DELETE_USETICKET_CATEGORY_FAILED,
-  createUseticketDefinitionThunk,
+  createUseTicketDefinitionThunk,
   deleteUseTicketCatoryThunk,
   getUseTicketCategoriesThunk,
 } from "modules/usetickets";
@@ -163,7 +163,7 @@ function UseTicketDefinitionCreationFormContainer() {
     };
 
     dispatch(
-      createUseticketDefinitionThunk(
+      createUseTicketDefinitionThunk(
         { partnerId, inputs },
         {
           successCb,

@@ -1,1 +1,1 @@
-export { default as UseTicketList } from "./UseTicketList";
+export { default as UseTicketDefinitionList } from "./UseTicketDefinitionList";

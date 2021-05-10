@@ -54,14 +54,14 @@ function Dropdown({
               className="option"
               onClick={(e) => handleSelectOption(e, option)}
             >
-              <span className="label">{option.label}</span>
-              {handlers.onOptionDelete && (
-                <span
+              <div className="label">{option.label}</div>
+              {handlers?.onOptionDelete && (
+                <div
                   className="delete"
                   onClick={(e) => handlers.onOptionDelete(e, selectedOption)}
                 >
                   X
-                </span>
+                </div>
               )}
             </li>
           ))}
@@ -97,8 +97,14 @@ const S = {
         background-color: white;
 
         .option {
-          padding: 20px 15px;
+          display: flex;
+          justify-content: space-between;
+          padding: 15px;
           border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+          .label {
+            text-align: center;
+          }
 
           .delete {
             color: red;

@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useHistory, useRouteMatch } from "react-router-dom";
 
 import { Head, SimpleButton } from "common/components";
+import { UseTicketDefinitionListContainer } from "./containers";
 
 function UseTicketDefinitionDisplayPage() {
   const history = useHistory();
@@ -22,6 +23,8 @@ function UseTicketDefinitionDisplayPage() {
           + 이용권 생성
         </SimpleButton>
       </Head>
+
+      <UseTicketDefinitionListContainer />
     </S.UseTicketDefinitionDisplayPage>
   );
 }
