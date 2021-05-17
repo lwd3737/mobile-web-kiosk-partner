@@ -15,6 +15,9 @@ function UseTicketManagement() {
       <Route exact path={`${path}/creation`}>
         <UseTicketDefinitionCreationPage />
       </Route>
+      <Route exact path={`${path}/:definitionId/modification`}>
+        <UseTicketDefinitionCreationPage />
+      </Route>
     </Switch>
   );
 }

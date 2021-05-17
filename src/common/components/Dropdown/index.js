@@ -1,76 +1,96 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import styled, { css } from "styled-components";
 
 function Dropdown({
-  inputId,
-  inputName,
+  name,
   value,
   options,
-  onInputChange,
-  handlers,
+  defaultOption,
+  onChange,
+  extraHandlers,
 }) {
   const [selectedOption, setSelectedOption] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+  const { onOptionDelete } = extraHandlers || {};
 
-  const handleToggleOptionsClick = (e) => {
-    e.stopPropagation();
-
+  const handleToggleOptionsClick = useCallback(() => {
     setIsOpen(!isOpen);
-  };
+  }, [isOpen]);
 
-  const handleSelectOption = (e, option) => {
-    e.stopPropagation();
+  const handleSelectOption = useCallback(
+    (e, option) => {
+      e.stopPropagation();
 
-    setSelectedOption(option);
-    handleToggleOptionsClick(e);
-  };
+      setSelectedOption(option);
+      handleToggleOptionsClick();
+    },
+    [selectedOption]
+  );
+
+  const triggerOptionChange = useCallback((value) => {
+    console.log("selected: ", selectedOption);
+    onChange(null, { name, value });
+  }, []);
 
   useEffect(
-    function initializeSelected() {
-      if (!options || !options.length === 0) return;
-      setSelectedOption(options[0]);
+    function intializeSelectedOption() {
+      if (!defaultOption || !defaultOption.value) return;
+
+      triggerOptionChange(defaultOption.value);
     },
-    [value]
+    [defaultOption]
   );
+
+  useEffect(
+    function updateSelectedOption() {
+      if (!selectedOption || !selectedOption.value) return;
+
+      triggerOptionChange(selectedOption.value);
+    },
+    [selectedOption]
+  );
+
+  const Options = useMemo(() => {
+    return options?.map((option, i) => (
+      <li
+        key={i}
+        className="option"
+        onClick={(e) => handleSelectOption(e, option)}
+      >
+        <div className="label">{option.label}</div>
+        {onOptionDelete && (
+          <div
+            className="delete"
+            onClick={(e) => onOptionDelete(e, selectedOption)}
+          >
+            X
+          </div>
+        )}
+      </li>
+    ));
+  }, [options]);
+
+  useEffect(
+    function initializeDefaultOption() {
+      setSelectedOption(defaultOption);
+    },
+    [defaultOption]
+  );
+
+  console.log("dropdown render: ", name);
 
   return (
     <S.Dropdown isOpen={isOpen}>
-      <input
-        type="hidden"
-        id={inputId}
-        name={inputName}
-        value={selectedOption?.value}
-        onChange={onInputChange}
-      />
-      <div className="selected" onClick={(e) => handleToggleOptionsClick(e)}>
+      <div className="selected" onClick={handleToggleOptionsClick}>
         <span className="label">{selectedOption?.label}</span>
         <span className="icon">{isOpen ? "▲" : "▼"}</span>
       </div>
-      <ul className="options">
-        {isOpen &&
-          options.map((option, i) => (
-            <li
-              key={i}
-              className="option"
-              onClick={(e) => handleSelectOption(e, option)}
-            >
-              <div className="label">{option.label}</div>
-              {handlers?.onOptionDelete && (
-                <div
-                  className="delete"
-                  onClick={(e) => handlers.onOptionDelete(e, selectedOption)}
-                >
-                  X
-                </div>
-              )}
-            </li>
-          ))}
-      </ul>
+      <ul className="options">{isOpen && Options}</ul>
     </S.Dropdown>
   );
 }
 
-export default Dropdown;
+export default React.memo(Dropdown);
 
 const S = {
   Dropdown: styled.div`

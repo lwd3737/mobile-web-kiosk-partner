@@ -32,6 +32,12 @@ const CREATE_USETICKET_DEFINITION_SUCCESS =
 export const CREATE_USETICKET_DEFINITION_FAILED =
   "usetickets/CREATE_USETICKET_DEFINITION_FAILED";
 
+const MODIFY_USETICKET_DEFINITION = "usetickets/MODIFY_USETICKET_DEFINITION";
+const MODIFY_USETICKET_DEFINITION_SUCCESS =
+  "usetickets/MODIFY_USETICKET_DEFINITION_SUCCESS";
+export const MODIFY_USETICKET_DEFINITION_FAILED =
+  "usetickets/MODIFY_USETICKET_DEFINITION_FAILED";
+
 export const createUseTicketCatetoryThunk = createAsyncThunk(
   CREATE_USETICKET_CATEGORY,
   useticketsApi.createUseticketCatetory
@@ -55,6 +61,11 @@ export const getUseTicketDefinitionsThunk = createAsyncThunk(
 export const createUseTicketDefinitionThunk = createAsyncThunk(
   CREATE_USETICKET_DEFINITION,
   useticketsApi.createUseticketDefinition
+);
+
+export const modifyUseTicketDefinitionThunk = createAsyncThunk(
+  MODIFY_USETICKET_DEFINITION,
+  useticketsApi.modifyUseticketDefinition
 );
 
 const initialState = {
@@ -135,22 +146,29 @@ const handleSuccess = (state, action) => {
         },
       };
     }
-    // case CREATE_USETICKET_DEFINITION_SUCCESS: {
-    //   const useticket = action.payload;
-
-    //   return {
-    //     ...state,
-    //     definitions: {
-    //       byId: {
-    //         ...state.definitions.byId,
-    //         [useticket.id]: {
-    //           ...useticket,
-    //         },
-    //       },
-    //       allIds: [...state.definitions.allIds, useticket.id],
-    //     },
-    //   };
-    // }
+    case CREATE_USETICKET_DEFINITION_SUCCESS: {
+      //const useticket = action.payload
+      //   return {
+      //     ...state,
+      //     definitions: {
+      //       byId: {
+      //         ...state.definitions.byId,
+      //         [useticket.id]: {
+      //           ...useticket,
+      //         },
+      //       },
+      //       allIds: [...state.definitions.allIds, useticket.id],
+      //     },
+      //   };
+      return {
+        ...state,
+      };
+    }
+    case MODIFY_USETICKET_DEFINITION_SUCCESS: {
+      return {
+        ...state,
+      };
+    }
   }
 };
 
@@ -160,7 +178,8 @@ export default function useticketsReducer(state = initialState, action) {
     case CREATE_USETICKET_CATEGORY_SUCCESS:
     case DELETE_USETICKET_CATEGORY_SUCCESS:
     case GET_USETICKET_DEFINITIONS_SUCCESS:
-      //case CREATE_USETICKET_DEFINITION_SUCCESS:
+    case CREATE_USETICKET_DEFINITION_SUCCESS:
+    case MODIFY_USETICKET_DEFINITION_SUCCESS:
       return handleSuccess(state, action);
     default:
       return state;

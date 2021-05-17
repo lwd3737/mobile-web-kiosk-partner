@@ -7,24 +7,25 @@ function FormField({
   labelText,
   inputId,
   inputType,
-  inputName,
+  name,
   value,
   options,
+  defaultOption,
   onChange,
-  handlers,
+  extraHandlers,
 }) {
   const renderInput = () => {
     if (inputType === "select") {
-      const _value = value || (options.length > 0 && options[0].value) || null;
+      const _value = value || defaultOption || null;
 
       return (
         <Dropdown
-          inputId={inputId}
-          inputName={inputName}
+          name={name}
           value={_value}
           options={options}
-          onInputChange={onChange}
-          handlers={handlers}
+          defaultOption={defaultOption}
+          onChange={onChange}
+          extraHandlers={extraHandlers}
         />
       );
     } else {
@@ -32,7 +33,7 @@ function FormField({
         <input
           id={inputId}
           type={inputType}
-          name={inputName}
+          name={name}
           value={value}
           onChange={onChange}
         />
@@ -48,7 +49,7 @@ function FormField({
   );
 }
 
-export default FormField;
+export default React.memo(FormField);
 
 const S = {
   FormField: styled.div`

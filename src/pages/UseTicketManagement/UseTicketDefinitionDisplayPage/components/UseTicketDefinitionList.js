@@ -1,5 +1,4 @@
 import React from "react";
-import styled from "styled-components";
 
 import { List } from "common/components";
 import UseTicketDefinitionItem from "./UseTicketDefinitionItem";
@@ -11,5 +10,3 @@ function UseTicketDefinitionList({ definitions }) {
 }
 
 export default UseTicketDefinitionList;
-
-const S = {};

@@ -1,22 +1,22 @@
-import React from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 
-function Form({ fields, bottom, onSubmit }) {
-  const _onSubmit = (e) => {
+function Form({ fieldComponents, bottom, onSubmit }) {
+  const _onSubmit = useCallback((e) => {
     e.preventDefault();
 
     onSubmit && onSubmit();
-  };
+  }, []);
 
   return (
     <S.Form onSubmit={_onSubmit}>
-      <div className="fields">{fields}</div>
+      <div className="fields">{fieldComponents}</div>
       <div className="bottom">{bottom}</div>
     </S.Form>
   );
 }
 
-export default Form;
+export default React.memo(Form);
 
 const S = {
   Form: styled.form`
