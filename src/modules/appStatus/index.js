@@ -1,81 +1,96 @@
-import {
-  GET_ROOM_LIST,
-  CREATE_ROOM,
-  GET_ROOM,
-  MODIFY_ROOM,
-  DELETE_ROOM,
-} from "../rooms";
+const LOADING = "appStatus/LOADING";
+const FAILED = "appStatus/FAILED";
+const FINISHED = "appStatus/FINISHED";
 
-import {
-  REQUEST_LOGIN,
-  // REQUEST_AUTO_LOGIN
-} from "../auth";
+export const loading = () => ({
+  type: LOADING,
+});
 
-//reducer utils
-const LOADING_TYPES = [
-  GET_ROOM_LIST,
-  CREATE_ROOM,
-  GET_ROOM,
-  MODIFY_ROOM,
-  DELETE_ROOM,
-  REQUEST_LOGIN,
-  // REQUEST_AUTO_LOGIN
-];
+export const failed = (error) => ({
+  type: FAILED,
+  error,
+});
 
-const isLoadingType = (type) => {
-  return type in LOADING_TYPES;
-};
+export const finished = () => ({
+  type: FINISHED,
+});
 
-const isSuccessType = (type) => {
-  return type.endsWith("SUCCESS");
-};
+// const isSuccessType = (type) => {
+//   return type.endsWith("SUCCESS");
+// };
 
-const isFailedType = (type) => {
-  return type.endsWith("FAILED");
-};
+// const isFailedType = (type) => {
+//   return type.endsWith("FAILED");
+// };
 
 const initialState = {
-  loading: [],
-  errors: [], //{ type: '...', message: '...' }
-};
-
-const removeLoading = (state, type) => {
-  return state.filter((_type) => _type !== type);
+  loading: false,
+  errorMessage: null,
 };
 
 export default function appStatusReducer(state = initialState, action) {
-  if (isLoadingType(action.type)) {
-    return {
-      ...state,
-      loading: state.loading.find((_type) => _type === action.type)
-        ? state.loading
-        : state.loading.concat(action.type),
-    };
-  } else if (isSuccessType(action.type)) {
-    return {
-      ...state,
-      loading: removeLoading(state.loading, action.type),
-      errors: state.errors.filter((error) => error.type !== action.type),
-    };
-  } else if (isFailedType(action.type)) {
-    const { error } = action;
-    const message = error.response?.data.errorMessage
-      ? error.response.data.errorMessage
-      : error.message;
-
-    return {
-      ...state,
-      loading: removeLoading(state.loading, action.type),
-      errors: state.errors.find((error) => error.type === action.type)
-        ? state.errors.map((error) =>
-            error.type === action.type ? { type: action.type, message } : error
-          )
-        : state.errors.concat({
-            type: action.type,
-            message,
-          }),
-    };
-  } else {
-    return state;
+  switch (action.type) {
+    case LOADING: {
+      return {
+        ...state,
+        loading: true,
+      };
+    }
+    case FAILED: {
+      const { error } = action;
+      const errorMessage = error.response.data.errorMessage || error.message;
+      console.log("errorMessage: ", errorMessage);
+      return {
+        ...state,
+        errorMessage,
+      };
+    }
+    case FINISHED: {
+      return {
+        loading: false,
+        errorMessage: null,
+      };
+    }
+    default:
+      return state;
   }
 }
+
+// const removeLoading = (state, type) => {
+//   return state.filter((_type) => _type !== type);
+// };
+
+// export default function appStatusReducer(state = initialState, action) {
+//   if (isLoadingType(action.type)) {
+//     return {
+//       ...state,
+//       loading: state.loading.find((_type) => _type === action.type)
+//         ? state.loading
+//         : state.loading.concat(action.type),
+//     };
+//   } else if (isSuccessType(action.type)) {
+//     return {
+//       ...state,
+//       loading: removeLoading(state.loading, action.type),
+//       errors: state.errors.filter((error) => error.type !== action.type),
+//     };
+//   } else if (isFailedType(action.type)) {
+//     const { type, error } = action;
+//     // const message = error.response?.data.errorMessage
+//     //   ? error.response.data.errorMessage
+//     //   : error.message;
+//     console.log("error res: ", error.response.data.errorMessage);
+//     const message = error.response.data.errorMessage;
+
+//     return {
+//       ...state,
+//       loading: removeLoading(state.loading, action.type),
+//       error: {
+//         type,
+//         message,
+//       },
+//     };
+//   } else {
+//     return state;
+//   }
+// }

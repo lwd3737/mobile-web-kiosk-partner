@@ -129,7 +129,6 @@ const handleSuccess = (state, action) => {
     }
     case GET_USETICKET_DEFINITIONS_SUCCESS: {
       const definitions = action.payload;
-      console.log("definitions: ", definitions, action);
 
       return {
         ...state,

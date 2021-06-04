@@ -13,24 +13,31 @@ function Dropdown({
   const [isOpen, setIsOpen] = useState(false);
   const { onOptionDelete } = extraHandlers || {};
 
-  const handleToggleOptionsClick = useCallback(() => {
+  const handleOptionsClick = useCallback(() => {
     setIsOpen(!isOpen);
   }, [isOpen]);
 
-  const handleSelectOption = useCallback(
+  const handleOptionSelect = useCallback(
     (e, option) => {
       e.stopPropagation();
 
       setSelectedOption(option);
-      handleToggleOptionsClick();
+      handleOptionsClick();
     },
     [selectedOption]
   );
 
-  const triggerOptionChange = useCallback((value) => {
-    console.log("selected: ", selectedOption);
-    onChange(null, { name, value });
-  }, []);
+  const triggerOptionChange = useCallback(
+    (defaultOption) => {
+      const target = {
+        name,
+        value: defaultOption ? defaultOption : value,
+      };
+
+      onChange({ target });
+    },
+    [value]
+  );
 
   useEffect(
     function intializeSelectedOption() {
@@ -55,7 +62,7 @@ function Dropdown({
       <li
         key={i}
         className="option"
-        onClick={(e) => handleSelectOption(e, option)}
+        onClick={(e) => handleOptionSelect(e, option)}
       >
         <div className="label">{option.label}</div>
         {onOptionDelete && (
@@ -81,7 +88,7 @@ function Dropdown({
 
   return (
     <S.Dropdown isOpen={isOpen}>
-      <div className="selected" onClick={handleToggleOptionsClick}>
+      <div className="selected" onClick={handleOptionsClick}>
         <span className="label">{selectedOption?.label}</span>
         <span className="icon">{isOpen ? "▲" : "▼"}</span>
       </div>

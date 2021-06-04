@@ -1,54 +1,24 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useCallback } from "react";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 
 import { Form, SimpleButton } from "common/components";
 import { useUseTicketDefinitionFields } from "../hooks";
-import {
-  GET_USETICKET_CATEGORIES_FAILED,
-  DELETE_USETICKET_CATEGORY_FAILED,
-  CREATE_USETICKET_DEFINITION_FAILED,
-  deleteUseTicketCatoryThunk,
-  getUseTicketCategoriesThunk,
-} from "modules/usetickets";
+import { CREATE_USETICKET_DEFINITION_FAILED } from "modules/usetickets";
 
-function UseTicketDefinitionForm({ defaultInputs, callUpdateDispatch }) {
+function UseTicketDefinitionForm({ callUpdateDispatch }) {
   const history = useHistory();
-  const dispatch = useDispatch();
-
   const partnerId = useSelector((state) => state.auth.partner.id);
-
-  const [inputs, setInputs] = useState({
-    categoryId: null,
-    periodUnit: null,
-    period: null,
-    price: null,
-  });
-
-  const onChange = useCallback(
-    (e, target) => {
-      const { name, value } = e ? e : target;
-
-      setInputs({
-        ...inputs,
-        [name]: value,
-      });
-    },
-    [inputs]
-  );
-
   const { fields, fieldComponents } = useUseTicketDefinitionFields({
     partnerId,
-    inputs,
-    onChange,
   });
 
   const handlePrevClick = useCallback(() => {
     history.replace("/partner/usetickets");
   }, []);
 
-  const handleUpdateClick = useCallback(() => {
-    const { categoryId, periodUnit, period, price } = inputs;
+  const handleUpdateClick = useCallback((fields) => {
+    const { categoryId, periodUnit, period, price } = fields;
 
     const makeMessage = (text) => {
       return `${text}을(를) 입력해주세요.`;
@@ -68,22 +38,21 @@ function UseTicketDefinitionForm({ defaultInputs, callUpdateDispatch }) {
     }
 
     const failedCb = (getState) => {
-      const error = getState().appStatus.errors.find(
-        (error) => error.type === CREATE_USETICKET_DEFINITION_FAILED
-      );
-
-      error && window.alert(error.message);
+      const { errorMessage } = getState().appStatus;
+      console.log("errorMessage: ", errorMessage);
+      window.alert(errorMessage);
     };
 
     callUpdateDispatch(
-      { partnerId, inputs },
+      { partnerId, inputs: fields },
       {
+        successCb: null,
         failedCb,
       }
     );
 
     handlePrevClick();
-  }, [inputs]);
+  }, []);
 
   const renderBottom = useCallback(() => {
     return (
@@ -100,39 +69,13 @@ function UseTicketDefinitionForm({ defaultInputs, callUpdateDispatch }) {
           extraStyle={{
             marginLeft: "20px",
           }}
-          onClick={handleUpdateClick}
+          onClick={() => handleUpdateClick(fields)}
         >
           생성
         </SimpleButton>
       </>
     );
-  }, []);
-
-  useEffect(function loadUseTicketCategories() {
-    const failedCb = (getState) => {
-      const error = getState().appStatus.errors.find(
-        (error) => error.type === GET_USETICKET_CATEGORIES_FAILED
-      );
-
-      error && window.alert(error.message);
-    };
-    dispatch(
-      getUseTicketCategoriesThunk({ partnerId }, { successCb: null, failedCb })
-    );
-  }, []);
-
-  useEffect(
-    function initializeInputs() {
-      const _inputs = defaultInputs ? defaultInputs : inputs;
-
-      setInputs({
-        ..._inputs,
-        categoryId: fields.categoryField.defaultOption?.value,
-        periodUnit: fields.periodUnitField.defaultOption?.value,
-      });
-    },
-    [fields.categoryField, fields.periodUnitField]
-  );
+  }, [fields]);
 
   return <Form fieldComponents={fieldComponents} bottom={renderBottom()} />;
 }

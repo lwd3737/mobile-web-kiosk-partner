@@ -10,10 +10,10 @@ import {
   getUseTicketCategoriesThunk,
 } from "modules/usetickets";
 
-function useUseTicketDefinitionFields({ partnerId, inputs, onChange }) {
+function useUseTicketDefinitionFields({ partnerId }) {
   const dispatch = useDispatch();
-  console.log("inputs: ", inputs);
-  const { categoryId, periodUnit, period, price } = inputs;
+  //console.log("inputs: ", inputs);
+  //const { categoryId, periodUnit, period, price } = inputs;
   const [categoryField, setCategoryField] = useState({
     labelText: "이용권 종류",
     inputType: "select",
@@ -66,19 +66,6 @@ function useUseTicketDefinitionFields({ partnerId, inputs, onChange }) {
     value: null,
   });
 
-  const categoriesSlice = useSelector((state) => state.usetickets.categories);
-  const categoryOptions = useMemo(
-    () =>
-      categoriesSlice.allIds.map((_id) => {
-        const { id, name } = categoriesSlice.byId[_id];
-        return {
-          label: name,
-          value: id,
-        };
-      }),
-    [categoriesSlice]
-  );
-
   const handleOptionDeleteClick = useCallback((e, option) => {
     e.stopPropagation();
 
@@ -108,19 +95,57 @@ function useUseTicketDefinitionFields({ partnerId, inputs, onChange }) {
     }
   }, []);
 
+  const handleFieldValueChange = useCallback((e, field, setFieldValue) => {
+    const { value } = e.target;
+
+    setFieldValue({
+      ...field,
+      value,
+    });
+  }, []);
+
+  useEffect(function loadUseTicketCategories() {
+    const failedCb = (getState) => {
+      const error = getState().appStatus.errors.find(
+        (error) => error.type === GET_USETICKET_CATEGORIES_FAILED
+      );
+
+      error && window.alert(error.message);
+    };
+    dispatch(
+      getUseTicketCategoriesThunk({ partnerId }, { successCb: null, failedCb })
+    );
+  }, []);
+
+  const categoriesSlice = useSelector((state) => state.usetickets.categories);
+  const categoryOptions = useMemo(
+    () =>
+      categoriesSlice.allIds.map((_id) => {
+        const { id, name } = categoriesSlice.byId[_id];
+
+        return {
+          label: name,
+          value: id,
+        };
+      }),
+    [categoriesSlice]
+  );
+
   useEffect(
     function initializeCategoryField() {
+      const defaultOption = categoryOptions[0];
+
       setCategoryField({
         ...categoryField,
         options: categoryOptions,
-        defaultOption: categoryOptions[0],
+        defaultOption,
         extraHandlers: {
           onOptionDelete: (e, option) => handleOptionDeleteClick(e, option),
         },
-        value: categoryId,
+        value: defaultOption?.value,
       });
     },
-    [categoryId, categoryOptions]
+    [categoryOptions]
   );
 
   const categoryFieldComponent = useMemo(() => {
@@ -128,20 +153,24 @@ function useUseTicketDefinitionFields({ partnerId, inputs, onChange }) {
       <FormField
         key={categoryField.name}
         {...categoryField}
-        onChange={onChange}
+        onChange={(e) =>
+          handleFieldValueChange(e, categoryField, setCategoryField)
+        }
       />
     );
   }, [categoryField]);
 
   useEffect(
     function initializePeriodUnitField() {
+      const defaultOption = periodUnitField.options[0];
+
       setPeriodUnitField({
         ...periodUnitField,
-        defaultOption: periodUnitField.options[0],
-        value: periodUnit,
+        defaultOption,
+        value: defaultOption?.value,
       });
     },
-    [periodUnit]
+    [periodField.value]
   );
 
   const periodUnitFieldComponent = useMemo(
@@ -149,7 +178,9 @@ function useUseTicketDefinitionFields({ partnerId, inputs, onChange }) {
       <FormField
         key={periodUnitField.name}
         {...periodUnitField}
-        onChange={onChange}
+        onChange={(e) =>
+          handleFieldValueChange(e, periodUnitField, setPeriodUnitField)
+        }
       />
     ),
     [periodUnitField]
@@ -159,15 +190,18 @@ function useUseTicketDefinitionFields({ partnerId, inputs, onChange }) {
     function initializePeriodField() {
       setPeriodField({
         ...periodField,
-        value: period,
       });
     },
-    [period]
+    [periodField.value]
   );
 
   const periodFieldComponent = useMemo(
     () => (
-      <FormField key={periodField.name} {...periodField} onChange={onChange} />
+      <FormField
+        key={periodField.name}
+        {...periodField}
+        onChange={(e) => handleFieldValueChange(e, periodField, setPeriodField)}
+      />
     ),
     [periodField]
   );
@@ -176,33 +210,40 @@ function useUseTicketDefinitionFields({ partnerId, inputs, onChange }) {
     function initializePriceField() {
       setPriceField({
         ...priceField,
-        value: price,
       });
     },
-    [price]
+    [priceField.value]
   );
 
   const priceFieldComponent = useMemo(
     () => (
-      <FormField key={priceField.name} {...priceField} onChange={onChange} />
+      <FormField
+        key={priceField.name}
+        {...priceField}
+        onChange={(e) => handleFieldValueChange(e, priceField, setPriceField)}
+      />
     ),
     [priceField]
   );
 
-  return {
-    fields: {
-      categoryField,
-      periodUnitField,
-      periodField,
-      priceField,
-    },
-    fieldComponents: [
-      categoryFieldComponent,
-      periodUnitFieldComponent,
-      periodFieldComponent,
-      priceFieldComponent,
-    ],
-  };
+  const results = useMemo(() => {
+    return {
+      fields: {
+        [categoryField.name]: categoryField.value,
+        [periodUnitField.name]: periodField.value,
+        [periodField.name]: periodField.value,
+        [priceField.name]: priceField.value,
+      },
+      fieldComponents: [
+        categoryFieldComponent,
+        periodUnitFieldComponent,
+        periodFieldComponent,
+        priceFieldComponent,
+      ],
+    };
+  }, [categoryField, periodUnitField, periodField, priceField]);
+
+  return results;
 }
 
 export default useUseTicketDefinitionFields;
